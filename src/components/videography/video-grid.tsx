@@ -23,9 +23,9 @@ export function VideoGrid({ videos, title }: VideoGridProps) {
     isDialogOpen.onTrue();
   };
 
-  // First 2 videos are large, next 3 are small
+  // First 2 videos are large, next 4 are small
   const largeVideos = videos.slice(0, 2);
-  const smallVideos = videos.slice(2, 5);
+  const smallVideos = videos.slice(2, 6);
 
   return (
     <>
@@ -55,7 +55,7 @@ export function VideoGrid({ videos, title }: VideoGridProps) {
           />
         ))}
       </div>
-      <div className='grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6'>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6'>
         {smallVideos.map((video, index) => (
           <VideoCard
             key={index + 2}

@@ -1,7 +1,57 @@
 import { VideoRole } from "@/lib/enums/video-role.enum";
 import { VideoItem } from "@/lib/types/videography";
 
+// Order matters: the featured grid and the directed carousel both render in
+// file order, so the featured six lead, then the carousel sequence.
 export const videographyVideos: VideoItem[] = [
+  {
+    role: VideoRole.Directed_Filmed_Edited,
+    title: "Magic",
+    url: "https://youtu.be/djaIqqFDX6U",
+    featured: true
+  },
+  {
+    role: VideoRole.Directed_Filmed_Edited,
+    title: "The Booklady",
+    url: "https://youtu.be/vOPwA3h1hss",
+    featured: true
+  },
+  {
+    role: VideoRole.Directed_Filmed_Edited,
+    title: "Save Cinema",
+    url: "https://youtu.be/OxPKrjwFD3w",
+    featured: true
+  },
+  {
+    role: VideoRole.Directed_Filmed_Edited,
+    title: "Joe McGovern",
+    url: "https://youtu.be/mUhTr9D3nIk",
+    featured: true
+  },
+  {
+    role: VideoRole.Directed_Filmed_Edited,
+    title: "Nia Therapeutics",
+    url: "https://youtu.be/_NRFxVC78-Q",
+    featured: true
+  },
+  {
+    role: VideoRole.Directed_Filmed_Edited,
+    title: "Academic Bridge Fellowship",
+    url: "https://youtu.be/Cj4F1seMxMA",
+    featured: true,
+    thumbnailVersion: 2
+  },
+  {
+    role: VideoRole.Directed_Filmed_Edited,
+    title: "Chabad of Tiburon",
+    url: "https://youtu.be/5DFiiIYycUs"
+  },
+  {
+    role: VideoRole.Directed_Filmed_Edited,
+    title: "Boundaries (Short Film)",
+    url: "https://youtu.be/8AteGtAEHI8",
+    thumbnailVersion: 2
+  },
   {
     role: VideoRole.Directed_Filmed_Edited,
     title: "Chabad of Sonoma County",
@@ -16,25 +66,6 @@ export const videographyVideos: VideoItem[] = [
     role: VideoRole.Directed_Filmed_Edited,
     title: "Israel Deep Dive",
     url: "https://youtu.be/9nq_QBjySag"
-  },
-  {
-    role: VideoRole.Directed_Filmed_Edited,
-    title: "Save Cinema",
-    url: "https://youtu.be/OxPKrjwFD3w",
-    featured: true
-  },
-  {
-    role: VideoRole.Directed_Filmed_Edited,
-    title: "The Booklady",
-    url: "https://youtu.be/vOPwA3h1hss",
-    featured: true
-  },
-  {
-    role: VideoRole.Directed_Filmed_Edited,
-    title: "Boundaries (Short Film)",
-    url: "https://youtu.be/8AteGtAEHI8",
-    featured: true,
-    thumbnailVersion: 2
   },
   {
     role: VideoRole.Directed_Filmed_Edited,
@@ -95,19 +126,6 @@ export const videographyVideos: VideoItem[] = [
     role: VideoRole.Directed_Filmed_Edited,
     title: "Ballerina (Vibe Video)",
     url: "https://youtu.be/HG_IXNlaHAA"
-  },
-  {
-    role: VideoRole.Directed_Filmed_Edited,
-    title: "Nia Therapeutics",
-    url: "https://youtu.be/_NRFxVC78-Q",
-    featured: true
-  },
-  {
-    role: VideoRole.Directed_Filmed_Edited,
-    title: "Academic Bridge Fellowship",
-    url: "https://youtu.be/Cj4F1seMxMA",
-    featured: true,
-    thumbnailVersion: 2
   },
   {
     role: VideoRole.Head_Producer,
