@@ -225,50 +225,187 @@
   }
 }
 
-/* Hero: gradient scrims only where text sits, top to bottom:
-   1. a soft pool of darkness at the top center behind the tagline,
-   2. a stronger bottom fade behind the description paragraph, running to
-      black so the section melts into the videography section below.
-   The center of the frame is untouched so the video plays at full
-   brightness. Deliberately on the dark side; tune the alphas down from here. */
-.hero-scrim {
+/* Hero text panel: a drifting light that reveals photography beneath it.
+   The glow (.hero-light) and the image mask (.hero-reveal) run the same
+   keyframes — identical position/size values — so the reveal tracks the
+   light. It has to be background/mask properties rather than a transform:
+   a transform would move the collage itself, not the window onto it. */
+.hero-light,
+.hero-reveal {
   position: absolute;
   inset: 0;
+  overflow: hidden;
   pointer-events: none;
-  background-image:
-    radial-gradient(
-      ellipse 40% 45% at 50% 0%,
-      rgba(0, 0, 0, 0.8) 0%,
-      rgba(0, 0, 0, 0.5) 40%,
-      rgba(0, 0, 0, 0) 100%
-    ),
-    linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, 0) 45%,
-      rgba(0, 0, 0, 0.65) 75%,
-      rgba(0, 0, 0, 0.92) 100%
-    );
 }
 
-/* Narrow screens: the label spans most of the width, so stretch the pool
-   across it instead of letting it fall off mid-line */
+/* Glow */
+.hero-light::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    closest-side,
+    rgba(253, 232, 185, 0.32) 0%,
+    rgba(253, 232, 185, 0.18) 35%,
+    rgba(253, 232, 185, 0.06) 65%,
+    transparent 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 40rem 40rem;
+  background-position: -12rem -8rem;
+  opacity: 0.6;
+  animation: hero-light-drift 20s ease-in-out infinite;
+}
+
+/* Trace of grain on top for texture */
+.hero-light::after {
+  content: "";
+  position: absolute;
+  inset: -6rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+  opacity: 0.04;
+  animation: hero-grain-shift 9s steps(10) infinite;
+}
+
+/* Photography collage, visible only where the light falls. luminosity blend
+   over the black panel keeps only the images' tonal values, so they sit in
+   the dark as monochrome rather than on top of it. The mask is the glow's
+   gradient shape at higher alphas: clearly readable in the light's core,
+   gone well before the gradient's edge. */
+.hero-reveal {
+  mix-blend-mode: luminosity;
+  -webkit-mask-image: radial-gradient(
+    closest-side,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.5) 35%,
+    rgba(0, 0, 0, 0.14) 65%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    closest-side,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.5) 35%,
+    rgba(0, 0, 0, 0.14) 65%,
+    transparent 100%
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 40rem 40rem;
+  mask-size: 40rem 40rem;
+  -webkit-mask-position: -12rem -8rem;
+  mask-position: -12rem -8rem;
+  opacity: 0.6;
+  animation: hero-light-drift 20s ease-in-out infinite;
+}
+
+.hero-reveal img {
+  filter: brightness(0.85);
+}
+
+@keyframes hero-light-drift {
+  0% {
+    background-position: -12rem -8rem;
+    -webkit-mask-position: -12rem -8rem;
+    mask-position: -12rem -8rem;
+    background-size: 40rem 40rem;
+    -webkit-mask-size: 40rem 40rem;
+    mask-size: 40rem 40rem;
+    opacity: 0.6;
+  }
+  30% {
+    background-position: 2rem 4rem;
+    -webkit-mask-position: 2rem 4rem;
+    mask-position: 2rem 4rem;
+    background-size: 48rem 48rem;
+    -webkit-mask-size: 48rem 48rem;
+    mask-size: 48rem 48rem;
+    opacity: 0.85;
+  }
+  55% {
+    background-position: 12rem 18rem;
+    -webkit-mask-position: 12rem 18rem;
+    mask-position: 12rem 18rem;
+    background-size: 36rem 36rem;
+    -webkit-mask-size: 36rem 36rem;
+    mask-size: 36rem 36rem;
+    opacity: 0.6;
+  }
+  80% {
+    background-position: -4rem 24rem;
+    -webkit-mask-position: -4rem 24rem;
+    mask-position: -4rem 24rem;
+    background-size: 46rem 46rem;
+    -webkit-mask-size: 46rem 46rem;
+    mask-size: 46rem 46rem;
+    opacity: 0.8;
+  }
+  100% {
+    background-position: -12rem -8rem;
+    -webkit-mask-position: -12rem -8rem;
+    mask-position: -12rem -8rem;
+    background-size: 40rem 40rem;
+    -webkit-mask-size: 40rem 40rem;
+    mask-size: 40rem 40rem;
+    opacity: 0.6;
+  }
+}
+
+/* Stacked layout: the text panel is phone-width and short, so the desktop
+   path would park the light off-panel for most of the cycle. Same idea on a
+   smaller, tighter path that stays over the text block. */
 @media (max-width: 767px) {
-  .hero-scrim {
-    background-image:
-      radial-gradient(
-        ellipse 80% 40% at 50% 0%,
-        rgba(0, 0, 0, 0.8) 0%,
-        rgba(0, 0, 0, 0.5) 40%,
-        rgba(0, 0, 0, 0) 100%
-      ),
-      linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0) 0%,
-        rgba(0, 0, 0, 0) 45%,
-        rgba(0, 0, 0, 0.65) 75%,
-        rgba(0, 0, 0, 0.92) 100%
-      );
+  .hero-light::before,
+  .hero-reveal {
+    animation-name: hero-light-drift-narrow;
+  }
+}
+
+@keyframes hero-light-drift-narrow {
+  0% {
+    background-position: -10rem -6rem;
+    -webkit-mask-position: -10rem -6rem;
+    mask-position: -10rem -6rem;
+    background-size: 26rem 26rem;
+    -webkit-mask-size: 26rem 26rem;
+    mask-size: 26rem 26rem;
+    opacity: 0.6;
+  }
+  30% {
+    background-position: -2rem 0rem;
+    -webkit-mask-position: -2rem 0rem;
+    mask-position: -2rem 0rem;
+    background-size: 30rem 30rem;
+    -webkit-mask-size: 30rem 30rem;
+    mask-size: 30rem 30rem;
+    opacity: 0.85;
+  }
+  55% {
+    background-position: 4rem 8rem;
+    -webkit-mask-position: 4rem 8rem;
+    mask-position: 4rem 8rem;
+    background-size: 24rem 24rem;
+    -webkit-mask-size: 24rem 24rem;
+    mask-size: 24rem 24rem;
+    opacity: 0.6;
+  }
+  80% {
+    background-position: -8rem 5rem;
+    -webkit-mask-position: -8rem 5rem;
+    mask-position: -8rem 5rem;
+    background-size: 28rem 28rem;
+    -webkit-mask-size: 28rem 28rem;
+    mask-size: 28rem 28rem;
+    opacity: 0.8;
+  }
+  100% {
+    background-position: -10rem -6rem;
+    -webkit-mask-position: -10rem -6rem;
+    mask-position: -10rem -6rem;
+    background-size: 26rem 26rem;
+    -webkit-mask-size: 26rem 26rem;
+    mask-size: 26rem 26rem;
+    opacity: 0.6;
   }
 }
 
@@ -721,6 +858,24 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* Hero: light frozen mid-panel, reveal left at a faint static level */
+  .hero-light::before,
+  .hero-light::after,
+  .hero-reveal {
+    animation: none;
+  }
+
+  .hero-light::before {
+    background-position: 0 2rem;
+    opacity: 0.7;
+  }
+
+  .hero-reveal {
+    -webkit-mask-position: 0 2rem;
+    mask-position: 0 2rem;
+    opacity: 0.35;
+  }
+
   .cinema-screening::before {
     animation: none;
     opacity: 0.9;
@@ -742,5 +897,19 @@
 
   .contact-reels::after {
     animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (max-width: 767px) {
+  .hero-light::before {
+    background-position: -4rem 0;
+    background-size: 28rem 28rem;
+  }
+
+  .hero-reveal {
+    -webkit-mask-position: -4rem 0;
+    mask-position: -4rem 0;
+    -webkit-mask-size: 28rem 28rem;
+    mask-size: 28rem 28rem;
   }
 }
