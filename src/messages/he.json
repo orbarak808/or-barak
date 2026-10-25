@@ -82,6 +82,8 @@
   "photography_description": "צילומים נבחרים מפרויקטים שונים ועבודות אישיות.",
   "photography_collection_title": "האוסף",
   "photography_collection_description": "מבחר אוצרות של עבודות צילום מתחומים ופרויקטים שונים.",
+  "photography_filter_label": "Filter photographs by category",
+  "photography_filter_all": "All",
   "photography_selected_works": "עבודות נבחרות",
   "photography_top_works": "הטופ {count}",
   "photography_full_catalog": "הקטלוג המלא",

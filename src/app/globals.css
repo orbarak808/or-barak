@@ -419,6 +419,66 @@
   }
 }
 
+/* /photography justified rows (src/components/photography/justified-
+   gallery.tsx). --row-h is the target row height. The component lays rows
+   out itself once it knows its width (--laid-out: a column of fixed-height
+   rows). Until then the rows come from flex-wrap: each tile's basis is its
+   width at the target height and its grow is its aspect ratio, so every
+   line fills the width with its tiles at one height, and ::after swallows
+   the last line's free space so that row stays at the target height. */
+.justified-gallery {
+  --row-h: 180px;
+  display: flex;
+  flex-wrap: wrap;
+  /* Heights come from each tile's aspect ratio, not from stretching */
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.justified-gallery::after {
+  content: "";
+  flex-grow: 1000000;
+}
+
+.justified-gallery--laid-out {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: stretch;
+}
+
+.justified-gallery--laid-out::after {
+  content: none;
+}
+
+.justified-tile {
+  position: relative;
+  display: block;
+  height: 100%;
+  overflow: hidden;
+  /* Neutral placeholder at the photo's exact size until it loads */
+  background-color: #141214;
+  cursor: pointer;
+}
+
+.justified-tile--wrap {
+  height: auto;
+  flex-grow: var(--ar);
+  flex-basis: calc(var(--row-h) * var(--ar));
+  aspect-ratio: var(--ar);
+}
+
+@media (min-width: 768px) {
+  .justified-gallery {
+    --row-h: 260px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .justified-gallery {
+    --row-h: 340px;
+  }
+}
+
 /* Camera-viewfinder frame for the photography section: focus-frame corner
    brackets plus a rule-of-thirds composition grid, drawn behind the gallery.
    Brackets pick up the site's bronze accent; the grid stays neutral. Colors
