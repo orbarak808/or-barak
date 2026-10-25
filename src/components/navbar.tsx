@@ -75,8 +75,8 @@ const Navbar = () => {
       />
       <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full'>
         <div className='relative flex h-14 sm:h-16 items-center justify-between md:justify-center'>
-          {/* Wordmark, with the tagline beside it (desktop only — no room
-              next to the hamburger on mobile) */}
+          {/* Wordmark, with the tagline beside it (xl+ only: below that it
+              would run into the centred links, on phones into the menu) */}
           <div className='flex items-center md:absolute md:left-4'>
             <Link
               href='/'
@@ -95,7 +95,7 @@ const Navbar = () => {
                     duration: prefersReducedMotion ? 0.15 : 0.3,
                     ease: "easeOut"
                   }}
-                  className='hidden md:flex items-center'
+                  className='hidden xl:flex items-center'
                 >
                   <span aria-hidden className='mx-3 h-4 w-px bg-[#4A443B]' />
                   <span className='whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.22em] text-[#D4AF37]'>
