@@ -41,7 +41,7 @@ export function HeroSection() {
   return (
     <section
       ref={sectionRef}
-      className='relative h-[100svh] min-h-[640px] w-full overflow-hidden md:h-[940px]'
+      className='relative h-[100svh] w-full overflow-hidden md:h-[940px]'
     >
       {/* Full-bleed portrait; on phones the face is centred in the frame.
           The scrims darken behind the text, then the whole stack fades out
@@ -52,7 +52,9 @@ export function HeroSection() {
           alt='Portrait of Or Barak'
           fill
           priority
-          sizes='100vw'
+          // On portrait phones cover scales the 16:9 photo to the screen's
+        // height, so it renders ~1.8x taller-than-wide: about 4 screen widths
+        sizes='(max-width: 767px) 400vw, 100vw'
           className='object-cover object-[51%_30%] md:object-[62%_30%]'
         />
         <div aria-hidden className='hero-scrim-side' />
@@ -75,7 +77,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: entranceY }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className='font-serif text-[52px] leading-none tracking-[-0.01em] text-[#EDE6D8] md:text-[72px] lg:text-[92px]'
+            className='font-serif text-[46px] leading-none tracking-[-0.01em] text-[#EDE6D8] md:text-[72px] lg:text-[92px]'
           >
             {t.rich("home_hero_headline", {
               em: (chunks) => (
@@ -88,7 +90,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: entranceY }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.55 }}
-            className='font-serif text-[24px] leading-[1.25] text-[#D9D1C2] md:text-[34px]'
+            className='font-serif text-[22px] leading-[1.25] text-[#D9D1C2] md:text-[34px]'
           >
             {t("home_hero_goal")}
           </motion.p>
@@ -97,7 +99,8 @@ export function HeroSection() {
             initial={{ opacity: 0, y: entranceY }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.7 }}
-            className='max-w-[520px] text-[17px] leading-[1.65] text-[#B5AD9F]'
+            // Phones skip the paragraph so the face keeps the upper half
+            className='hidden max-w-[520px] text-[17px] leading-[1.65] text-[#B5AD9F] md:block'
           >
             {t("home_hero_description")}
           </motion.p>

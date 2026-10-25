@@ -295,8 +295,8 @@
 /* Landing hero scrims over the full-bleed portrait. The side scrim holds
    the text column (desktop only: on phones the text sits at the bottom).
    The fall scrim darkens the top under the navbar and dissolves the photo
-   into the sky's base colour (#060506) at the bottom; on phones it starts
-   higher, since the text block covers the lower half. The fall ends on the
+   into the sky's base colour (#060506) at the bottom; on phones it covers
+   the lower ~40% where the text sits, leaving the face clear above. The fall ends on the
    sky's base colour, but the sky behind is lifted by its warm light, so an
    opaque end would leave a line where the hero stops: .hero-media fades the
    photo and both scrims out over the last stretch instead. */
@@ -329,8 +329,8 @@
     to bottom,
     rgba(6, 5, 6, 0.5) 0%,
     transparent 16%,
-    transparent 26%,
-    rgba(6, 5, 6, 0.85) 48%,
+    transparent 40%,
+    rgba(6, 5, 6, 0.85) 60%,
     #060506 100%
   );
 }
