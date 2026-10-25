@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import { motion, type HTMLMotionProps } from "framer-motion";
+import { motion, type MotionProps } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
 /*
@@ -27,11 +27,14 @@ export function ScrollRevealProvider({
   );
 }
 
+// Element-agnostic, so the same entrance spreads onto any motion element
+type RevealMotionProps = MotionProps & { "data-reveal": string };
+
 /**
  * Motion props for a scroll entrance, or null outside ScrollRevealProvider
  * (callers then keep their own entrance, if any).
  */
-export function useScrollReveal(delay = 0): HTMLMotionProps<"div"> | null {
+export function useScrollReveal(delay = 0): RevealMotionProps | null {
   const active = useContext(ScrollRevealContext);
   const reduced = usePrefersReducedMotion();
   if (!active) return null;
@@ -44,7 +47,7 @@ export function useScrollReveal(delay = 0): HTMLMotionProps<"div"> | null {
       initial: hidden,
       animate: shown,
       transition: { duration: 0 }
-    } as HTMLMotionProps<"div">;
+    };
   }
   return {
     "data-reveal": "",
@@ -52,7 +55,7 @@ export function useScrollReveal(delay = 0): HTMLMotionProps<"div"> | null {
     whileInView: shown,
     viewport: { once: true, margin: "0px 0px -8% 0px" },
     transition: { duration: 1, ease: [0.22, 1, 0.36, 1], delay }
-  } as HTMLMotionProps<"div">;
+  };
 }
 
 /** A div that rises in on the landing page and is a plain div elsewhere. */

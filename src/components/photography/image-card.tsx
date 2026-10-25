@@ -11,7 +11,7 @@ interface ImageCardProps {
   image: PhotographyImage;
   index?: number;
   size?: "small" | "medium" | "large" | "varied";
-  onClick?: () => void;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   className?: string;
 }
 
@@ -34,21 +34,25 @@ export function ImageCard({
   const reveal = useScrollReveal((index % 3) * 0.06);
 
   return (
-    <motion.div
+    // A button, so the photo can be opened from the keyboard and the
+    // lightbox can hand focus back to it on close
+    <motion.button
+      type='button'
+      aria-label={image.alt}
       {...(reveal ?? {
         initial: { opacity: 0, y: 20 },
         animate: { opacity: 1, y: 0 },
         transition: { duration: 0.5, delay: index * 0.05 }
       })}
       className={cn(
-        "group relative cursor-pointer overflow-hidden rounded-lg",
+        "group relative block w-full cursor-pointer overflow-hidden rounded-lg text-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]/60",
         className
       )}
       onClick={onClick}
     >
-      <div
+      <span
         className={cn(
-          "relative w-full overflow-hidden bg-zinc-100 dark:bg-zinc-900",
+          "relative block w-full overflow-hidden bg-zinc-100 dark:bg-zinc-900",
           size !== "varied" && sizeClasses[size]
         )}
       >
@@ -60,7 +64,7 @@ export function ImageCard({
           sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
         />
         {/* Overlay on hover */}
-        <div className='absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300' />
+        <span className='absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300' />
 
         {/* Title and category overlay */}
         {/* 
@@ -88,7 +92,7 @@ export function ImageCard({
             </div>
           )}
         */}
-      </div>
-    </motion.div>
+      </span>
+    </motion.button>
   );
 }

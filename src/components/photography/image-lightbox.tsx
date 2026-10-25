@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { useCallback, useEffect, useRef, useState } from "react";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Icon } from "@/components/ui/icon";
-import { Typography } from "@/components/ui/typography";
 import { PhotographyImage } from "@/lib/types/photography";
+import { lightboxSrc } from "@/lib/content/photography";
 
 interface ImageLightboxProps {
   images: PhotographyImage[];
@@ -14,129 +12,168 @@ interface ImageLightboxProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title?: string;
+  /** Focus goes back here on close (the thumbnail that opened it) */
+  returnFocusRef?: React.RefObject<HTMLElement | null>;
 }
 
+const arrowClasses =
+  "absolute top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#D4AF37] bg-[rgba(6,5,6,0.7)] text-[#EDE6D8] transition-colors hover:bg-[#D4AF37]/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]/60 sm:h-12 sm:w-12";
+
+// A horizontal drag longer than this (px) on touch screens flips the photo
+const SWIPE_THRESHOLD = 50;
+
+/**
+ * Full-viewport photo viewer. The photo sizes to its own aspect ratio
+ * (contain, at most 92vw x 86vh), so landscape and portrait shots both fill
+ * the screen without bars. Radix supplies the modal behaviour: focus is
+ * moved in and trapped, body scroll is locked, Escape closes.
+ */
 export function ImageLightbox({
   images,
   initialIndex,
   open,
   onOpenChange,
-  title
+  title,
+  returnFocusRef
 }: ImageLightboxProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const touchStartX = useRef<number | null>(null);
+
+  // Each opening starts on the photo that was clicked
+  const [wasOpen, setWasOpen] = useState(open);
+  if (open !== wasOpen) {
+    setWasOpen(open);
+    if (open) setCurrentIndex(initialIndex);
+  }
+
+  const count = images.length;
+  const goToPrevious = useCallback(
+    () => setCurrentIndex((i) => (i - 1 + count) % count),
+    [count]
+  );
+  const goToNext = useCallback(
+    () => setCurrentIndex((i) => (i + 1) % count),
+    [count]
+  );
 
   useEffect(() => {
-    setCurrentIndex(initialIndex);
-  }, [initialIndex]);
+    if (!open || count < 2) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") goToPrevious();
+      else if (e.key === "ArrowRight") goToNext();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open, count, goToPrevious, goToNext]);
 
-  const currentImage = images[currentIndex];
-
-  const goToPrevious = () => {
-    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  };
-
-  const goToNext = () => {
-    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-  };
-
+  // Lock page scroll while open. Radix locks <body>, but this site scrolls
+  // the viewport through <html> (its overflow is clipped, not visible), so
+  // the lock has to sit on the root element.
   useEffect(() => {
     if (!open) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") {
-        goToPrevious();
-      } else if (e.key === "ArrowRight") {
-        goToNext();
-      } else if (e.key === "Escape") {
-        onOpenChange(false);
-      }
+    const root = document.documentElement;
+    const previous = root.style.overflow;
+    root.style.overflow = "hidden";
+    return () => {
+      root.style.overflow = previous;
     };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
+  // Warm the cache with the neighbours so stepping through is instant
+  useEffect(() => {
+    if (!open || count < 2) return;
+    for (const offset of [-1, 1]) {
+      const neighbour = images[(currentIndex + offset + count) % count];
+      const img = new window.Image();
+      img.src = lightboxSrc(neighbour);
+    }
+  }, [open, currentIndex, count, images]);
+
+  const currentImage = images[currentIndex];
   if (!currentImage) return null;
 
+  const close = () => onOpenChange(false);
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        className='max-w-7xl w-full h-[90vh] p-0 gap-0 bg-black/95 border-none'
-        showCloseButton={true}
-      >
-        <DialogTitle className='sr-only'>
-          {title || currentImage.title || "Photography Collection"}
-        </DialogTitle>
-        <div className='relative w-full h-full flex items-center justify-center'>
-          {/* Image */}
-          <div className='relative w-full h-full flex items-center justify-center p-4 md:p-8'>
-            <Image
-              src={currentImage.src}
-              alt={currentImage.alt}
-              fill
-              className='object-contain'
-              priority
-            />
-          </div>
-          {/* Navigation Buttons */}
-          {images.length > 1 && (
+    <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
+      <DialogPrimitive.Portal>
+        <DialogPrimitive.Content
+          aria-describedby={undefined}
+          onCloseAutoFocus={(e) => {
+            const target = returnFocusRef?.current;
+            if (target) {
+              e.preventDefault();
+              target.focus({ preventScroll: true });
+            }
+          }}
+          onTouchStart={(e) => {
+            touchStartX.current = e.touches[0].clientX;
+          }}
+          onTouchEnd={(e) => {
+            const start = touchStartX.current;
+            touchStartX.current = null;
+            if (start === null || count < 2) return;
+            const dx = e.changedTouches[0].clientX - start;
+            if (dx > SWIPE_THRESHOLD) goToPrevious();
+            else if (dx < -SWIPE_THRESHOLD) goToNext();
+          }}
+          // A click on the backdrop (anything but the photo and controls)
+          // closes the viewer
+          onClick={(e) => {
+            if (e.target === e.currentTarget) close();
+          }}
+          className='fixed inset-0 z-50 flex items-center justify-center bg-[rgba(4,4,5,0.96)] outline-none data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 duration-200'
+        >
+          <DialogPrimitive.Title className='sr-only'>
+            {title || currentImage.title || currentImage.alt}
+          </DialogPrimitive.Title>
+
+          {/* eslint-disable-next-line @next/next/no-img-element -- the large
+              Drive rendition is shown as-is (Next's optimizer can't process
+              the big originals) and must size to its own aspect ratio */}
+          <img
+            key={currentImage.id}
+            src={lightboxSrc(currentImage)}
+            alt={currentImage.alt}
+            className='block h-auto max-h-[86vh] w-auto max-w-[92vw] object-contain select-none animate-in fade-in-0 duration-300'
+            draggable={false}
+          />
+
+          {count > 1 && (
+            <p className='absolute left-5 top-5 text-sm tabular-nums tracking-[0.12em] text-[#B5AD9F] sm:left-8 sm:top-6'>
+              {currentIndex + 1} / {count}
+            </p>
+          )}
+
+          <DialogPrimitive.Close
+            className='absolute right-3 top-3 flex h-11 w-11 items-center justify-center text-[#B5AD9F] transition-colors hover:text-[#EDE6D8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]/60 rounded-full sm:right-6 sm:top-4'
+            aria-label='Close'
+          >
+            <Icon name='lucide:x' className='h-6 w-6' />
+          </DialogPrimitive.Close>
+
+          {count > 1 && (
             <>
-              <Button
-                variant='ghost'
-                size='icon-lg'
-                className='absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white border-none'
+              <button
+                type='button'
                 onClick={goToPrevious}
                 aria-label='Previous image'
+                className={`${arrowClasses} left-3 sm:left-6`}
               >
-                <Icon name='mdi:chevron-left' className='w-8 h-8' />
-              </Button>
-              <Button
-                variant='ghost'
-                size='icon-lg'
-                className='absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white border-none'
+                <Icon name='lucide:arrow-left' className='h-5 w-5' />
+              </button>
+              <button
+                type='button'
                 onClick={goToNext}
                 aria-label='Next image'
+                className={`${arrowClasses} right-3 sm:right-6`}
               >
-                <Icon name='mdi:chevron-right' className='w-8 h-8' />
-              </Button>
+                <Icon name='lucide:arrow-right' className='h-5 w-5' />
+              </button>
             </>
           )}
-          {/* Image Info */}
-          {/*
-          #TODO: Decide if we need this. or remove completely.
-           {(currentImage.title || currentImage.category) && (
-            <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-6'>
-              <div className='max-w-4xl mx-auto'>
-                {currentImage.title && (
-                  <Typography
-                    variant='h4'
-                    className='text-white font-serif italic mb-2'
-                  >
-                    {currentImage.title}
-                  </Typography>
-                )}
-                {currentImage.category && (
-                  <Typography
-                    variant='body2'
-                    className='text-amber-500 uppercase text-sm font-medium tracking-wider'
-                  >
-                    {currentImage.category}
-                  </Typography>
-                )}
-              </div>
-            </div>
-          )} */}
-          {/* Image Counter */}
-          {images.length > 1 && (
-            <div className='absolute top-4 right-4 bg-black/50 px-4 py-2 rounded-md'>
-              <Typography variant='body2' className='text-white text-sm'>
-                {currentIndex + 1} / {images.length}
-              </Typography>
-            </div>
-          )}
-        </div>
-      </DialogContent>
-    </Dialog>
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
+    </DialogPrimitive.Root>
   );
 }

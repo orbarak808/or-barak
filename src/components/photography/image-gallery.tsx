@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ImageCard } from "./image-card";
 import { ImageLightbox } from "./image-lightbox";
 import { PhotographyImage } from "@/lib/types/photography";
@@ -25,6 +25,8 @@ export function ImageGallery({
 }: ImageGalleryProps) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  // The thumbnail that opened the lightbox gets focus back on close
+  const openerRef = useRef<HTMLElement | null>(null);
 
   const imagesForLightbox = allImages || images;
 
@@ -64,7 +66,10 @@ export function ImageGallery({
             image={image}
             index={index}
             size={size}
-            onClick={() => handleImageClick(index)}
+            onClick={(event) => {
+              openerRef.current = event.currentTarget;
+              handleImageClick(index);
+            }}
           />
         ))}
       </div>
@@ -75,6 +80,7 @@ export function ImageGallery({
           initialIndex={lightboxIndex}
           open={lightboxOpen}
           onOpenChange={setLightboxOpen}
+          returnFocusRef={openerRef}
         />
       )}
     </>

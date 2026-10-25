@@ -6,13 +6,24 @@ import { PhotoTag } from "../enums/photo-tags.enum";
 // them, so the image never renders. The thumbnail endpoint returns a pre-resized
 // version instead — 2000px wide is plenty for web display and loads much faster.
 const DRIVE_THUMBNAIL_WIDTH = 2000;
+// The lightbox shows one photo across most of the screen, so it asks Drive
+// for a larger rendition than the grids do
+const DRIVE_LIGHTBOX_WIDTH = 2400;
 
-export const driveThumbnail = (id: string): string =>
-  `https://drive.google.com/thumbnail?id=${id}&sz=w${DRIVE_THUMBNAIL_WIDTH}`;
+export const driveThumbnail = (
+  id: string,
+  width: number = DRIVE_THUMBNAIL_WIDTH
+): string => `https://drive.google.com/thumbnail?id=${id}&sz=w${width}`;
 
 // Extract the file id from a Drive `...&id=<fileId>` URL; null for non-Drive srcs.
 export const driveFileId = (src: string): string | null =>
   src.match(/[?&]id=([A-Za-z0-9_-]+)/)?.[1] ?? null;
+
+// The lightbox's large version of an image; non-Drive srcs are used as-is
+export const lightboxSrc = (image: PhotographyImage): string => {
+  const id = driveFileId(image.src);
+  return id ? driveThumbnail(id, DRIVE_LIGHTBOX_WIDTH) : image.src;
+};
 
 // Rewrite a Drive `...&id=<fileId>` URL to the thumbnail endpoint. Any src that
 // doesn't carry a Drive file id (e.g. non-Drive hosts) is returned unchanged.
