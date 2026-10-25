@@ -20,6 +20,8 @@ type SectionHeadingProps = {
   /** Links on the right of the heading (below it on phones) */
   aside?: React.ReactNode;
   align?: "start" | "center";
+  /** h1 for a page's own header, h2 for a section within a page */
+  as?: "h1" | "h2";
   className?: string;
 };
 
@@ -32,6 +34,7 @@ export function SectionHeading({
   title,
   aside,
   align = "start",
+  as: Heading = "h2",
   className
 }: SectionHeadingProps) {
   return (
@@ -51,9 +54,9 @@ export function SectionHeading({
         )}
       >
         {eyebrow && <p className={eyebrowClasses}>{eyebrow}</p>}
-        <h2 className='font-serif text-[44px] leading-[1.05] tracking-[-0.01em] text-[#EDE6D8] md:text-[64px]'>
+        <Heading className='font-serif text-[44px] leading-[1.05] tracking-[-0.01em] text-[#EDE6D8] md:text-[64px]'>
           {title}
-        </h2>
+        </Heading>
       </div>
       {aside && (
         <div className='flex flex-wrap items-center gap-7 md:pb-3'>{aside}</div>

@@ -45,7 +45,7 @@ export default async function RootLayout({
       className={`${instrumentSerif.variable} ${instrumentSans.variable} dark`}
       suppressHydrationWarning
     >
-      <body className='antialiased bg-background text-foreground overflow-x-clip'>
+      <body className='antialiased bg-[#060506] text-foreground overflow-x-clip'>
         <NextIntlClientProvider messages={messages} locale={locale}>
           <HeroVisibilityProvider>
             <Navbar />

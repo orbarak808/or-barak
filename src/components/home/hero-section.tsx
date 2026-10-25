@@ -20,7 +20,7 @@ export function HeroSection() {
   const { setHeroVisibility } = useHeroVisibility();
 
   // Report whether the hero is still on screen. The navbar shows the tagline
-  // (and its glass background) once the hero's bottom edge scrolls up under
+  // once the hero's bottom edge scrolls up under
   // the fixed navbar. The top margin is the navbar height plus a few px: an
   // element touching the boundary still counts as intersecting.
   useEffect(() => {
