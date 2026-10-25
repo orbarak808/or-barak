@@ -577,18 +577,20 @@
   display: none;
   overflow: hidden;
   pointer-events: none;
+  /* Long fades: the strips emerge from and dissolve into darkness, with no
+     visible start or end */
   -webkit-mask-image: linear-gradient(
     to bottom,
     transparent,
-    #000 15%,
-    #000 85%,
+    #000 30%,
+    #000 70%,
     transparent
   );
   mask-image: linear-gradient(
     to bottom,
     transparent,
-    #000 15%,
-    #000 85%,
+    #000 30%,
+    #000 70%,
     transparent
   );
 }
@@ -606,7 +608,9 @@
   bottom: -12%;
   width: var(--strip-w);
   overflow: hidden;
-  opacity: 0.92;
+  /* Quiet: the strips recede behind the form. Every layer inside (frames,
+     dust, scratch, light leak) is composited under this opacity. */
+  opacity: 0.6;
 }
 
 /* Centred in the gutter beside the 32rem content column */
@@ -617,7 +621,11 @@
 
 .film-strip-rail--right {
   right: max(1.5rem, calc((100% - 32rem) / 4 - var(--strip-w) / 2));
-  transform: rotate(2deg) scaleX(-1);
+  /* Further back: smaller, softer, dimmer and slower than the left strip.
+     Mirrored (negative x scale) so its edge print sits on its outer edge. */
+  transform: rotate(2deg) scale(-0.88, 0.88);
+  filter: blur(0.6px);
+  opacity: 0.45;
 }
 
 .film-strip-weave {
@@ -634,16 +642,18 @@
 }
 
 .film-strip-rail--right .film-strip-track {
+  /* ~30% slower than the left */
+  animation-duration: 114s;
   animation-delay: -37s;
 }
 
 /* One copy of the frame column: celluloid base, density drift along the
-   length, sprocket holes in the outer (14px) and inner (8px) margins. The
+   length, sprocket holes in the outer (16px) and inner (10px) margins. The
    right strip is mirrored as a whole, so its edge print and wider margin
    sit on its outer edge too. */
 .film-strip-copy {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='16'%3E%3Crect x='0.35' y='5.75' width='5.3' height='4.5' rx='1.1' fill='%23070504' stroke='%23FFD6A0' stroke-opacity='0.3' stroke-width='0.7'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='16'%3E%3Crect x='0.35' y='5.75' width='5.3' height='4.5' rx='1.1' fill='%23070504' stroke='%23FFD6A0' stroke-opacity='0.3' stroke-width='0.7'/%3E%3C/svg%3E"),
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='16'%3E%3Crect x='0.4' y='5.3' width='6.2' height='5.4' rx='1.6' fill='%23070504' stroke='%23E8B878' stroke-opacity='0.18' stroke-width='0.8'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='16'%3E%3Crect x='0.4' y='5.3' width='6.2' height='5.4' rx='1.6' fill='%23070504' stroke='%23E8B878' stroke-opacity='0.18' stroke-width='0.8'/%3E%3C/svg%3E"),
     repeating-linear-gradient(
       180deg,
       rgba(255, 220, 170, 0.035) 0px,
@@ -658,9 +668,9 @@
       #36241a 70%,
       #2a1d12
     );
-  background-size: 6px 16px, 6px 16px, auto, auto;
+  background-size: 7px 16px, 7px 16px, auto, auto;
   background-repeat: repeat-y, repeat-y, repeat, no-repeat;
-  background-position: 7px 0, right 1px top 0, 0 0, 0 0;
+  background-position: 8px 0, right 1.5px top 0, 0 0, 0 0;
 }
 
 .film-strip-frame {
@@ -673,12 +683,13 @@
   position: absolute;
   top: 1px;
   bottom: 1px;
-  left: 14px;
-  right: 8px;
-  width: calc(100% - 22px);
+  left: 16px;
+  right: 10px;
+  width: calc(100% - 26px);
   height: 62px;
   object-fit: cover;
-  filter: sepia(0.35) contrast(0.9) brightness(0.75);
+  /* One warm monochrome grade for every frame, so no colour pops */
+  filter: grayscale(1) sepia(0.45) brightness(0.62) contrast(0.95);
 }
 
 .film-strip-rail--right .film-strip-image {
@@ -702,6 +713,19 @@
 
 .film-strip-rail--right .film-strip-edge {
   transform: scaleX(-1);
+}
+
+/* A soft dark pool behind the form, above the strips, so the form reads
+   first */
+.film-strip-scrim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(6, 5, 6, 0.6),
+    rgba(6, 5, 6, 0.3) 25%,
+    transparent 45%
+  );
 }
 
 /* Dust: two sets of specks that flash at different moments */

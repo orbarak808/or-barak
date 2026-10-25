@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { PhotographyImage } from "@/lib/types/photography";
 import {
   driveFileId,
@@ -45,13 +46,15 @@ function StripCopy({ photos, firstFrame }: Omit<StripProps, "side">) {
             <span className='film-strip-edge'>
               {i % 4 === 0 ? `OB 26 ▸ ${number}` : number}
             </span>
-            {/* eslint-disable-next-line @next/next/no-img-element -- tiny
-                decorative thumbnails straight from Drive, graded in CSS */}
-            <img
+            {/* Through the image optimizer, like the galleries: loaded from
+                this site and cached, since Google intermittently blocks
+                Drive thumbnails hotlinked straight into the page */}
+            <Image
               src={frameSrc(photo)}
               alt=''
-              loading='lazy'
-              decoding='async'
+              width={94}
+              height={62}
+              sizes='94px'
               className='film-strip-image'
             />
           </div>
@@ -121,6 +124,7 @@ export function FilmStrips() {
     >
       <Strip side='left' photos={filmStripPhotos} firstFrame={14} />
       <Strip side='right' photos={rightPhotos} firstFrame={31} />
+      <div className='film-strip-scrim' />
     </div>
   );
 }
