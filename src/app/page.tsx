@@ -2,12 +2,17 @@ import { AtmosphereSky } from "@/components/atmosphere-sky";
 import Contact from "@/components/contact";
 import Footer from "@/components/footer";
 import { HeroSection } from "@/components/home";
+import { FeaturedFilms } from "@/components/home/featured-films";
+import {
+  SectionHeading,
+  headingEm,
+  textLinkClasses
+} from "@/components/home/section-heading";
 import { ImageGallery } from "@/components/photography/image-gallery";
 import ImageSectionTitle from "@/components/photography/image-section-title";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { Reveal, ScrollRevealProvider } from "@/components/ui/scroll-reveal";
-import { VideoGrid } from "@/components/videography/video-grid";
 import { featuredPhotos } from "@/lib/content/photography";
 import { featuredVideos } from "@/lib/content/videography";
 import { Metadata } from "next";
@@ -65,7 +70,6 @@ export default async function Home() {
           data-sky='films'
           className='relative isolate scroll-mt-14 sm:scroll-mt-16'
         >
-          <div aria-hidden='true' className='cinema-screening' />
           <div
             aria-hidden='true'
             className='cinema-curtain cinema-curtain--left'
@@ -74,24 +78,33 @@ export default async function Home() {
             aria-hidden='true'
             className='cinema-curtain cinema-curtain--right'
           />
-          <Container className='py-8 sm:py-12 md:py-16 lg:py-20'>
-            <div className='relative max-w-7xl mx-auto space-y-8 sm:space-y-12'>
-              <VideoGrid
-                videos={featuredVideos}
-                title={t("videography_subtitle")}
-              />
-              <Reveal className='flex flex-col sm:flex-row justify-center gap-3 sm:gap-4'>
-                <Button asChild variant='outline' size='lg'>
-                  <Link href='/videography'>
-                    {t("home_videography_view_all")}
-                  </Link>
-                </Button>
-                <Button asChild variant='outline' size='lg'>
-                  <Link href='/videography#credits'>
-                    {t("home_videography_credits")}
-                  </Link>
-                </Button>
-              </Reveal>
+          <Container className='py-12 md:py-16 lg:py-20'>
+            <div className='relative max-w-7xl mx-auto space-y-10 md:space-y-12'>
+              <div className='space-y-5'>
+                <SectionHeading
+                  eyebrow={t("videography_subtitle")}
+                  title={t.rich("home_films_heading", { em: headingEm })}
+                  aside={
+                    <>
+                      <Link href='/videography' className={textLinkClasses}>
+                        {t("home_videography_view_all")}
+                      </Link>
+                      <Link
+                        href='/videography#credits'
+                        className={textLinkClasses}
+                      >
+                        {t("home_videography_credits")}
+                      </Link>
+                    </>
+                  }
+                />
+                <Reveal>
+                  <p className='max-w-2xl text-base leading-[1.65] text-[#B5AD9F]'>
+                    {t("videography_description")}
+                  </p>
+                </Reveal>
+              </div>
+              <FeaturedFilms videos={featuredVideos} />
             </div>
           </Container>
         </section>

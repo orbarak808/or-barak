@@ -367,237 +367,70 @@
   100% { transform: translate3d(0, 0, 0); }
 }
 
-/* Cinema-screening atmosphere for the films section. The section bg is pure
-   black, so darkening alone would be invisible: the vignette layer first
-   lifts the center with a faint warm "light scattered off the screen" glow,
-   then darkens back to black toward the edges and corners — that contrast is
-   what reads as a darkened theater. A soft warm cone (the beam layer) falls
-   from a projector apex above the section, flickering and drifting slightly. */
-.cinema-screening {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    transparent,
-    #000 15%,
-    #000 85%,
-    transparent
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    transparent,
-    #000 15%,
-    #000 85%,
-    transparent
-  );
-}
-
-/* Projector beam: tungsten-warm cone with its apex above the top edge,
-   ~26deg half-angle so it washes down over the content, blurred soft and
-   faded out near the bottom of the section */
-.cinema-screening::before {
-  content: "";
-  position: absolute;
-  inset: -4rem 0 0;
-  background-image: conic-gradient(
-    at 50% -6rem,
-    transparent 148deg,
-    rgba(255, 214, 150, 0.12) 158deg,
-    rgba(255, 222, 166, 0.28) 176deg 184deg,
-    rgba(255, 214, 150, 0.12) 202deg,
-    transparent 212deg
-  );
-  filter: blur(8px);
-  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 97%);
-  mask-image: linear-gradient(to bottom, #000 55%, transparent 97%);
-  animation: cinema-beam-flicker 6s ease-in-out infinite,
-    cinema-beam-drift 19s ease-in-out infinite alternate;
-}
-
-/* Screen glow + vignette: warm lift strongest where the cards sit, deepening
-   to a wine-black at the corners */
-.cinema-screening::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(
-      ellipse 140% 110% at 50% 45%,
-      transparent 40%,
-      rgba(22, 6, 11, 0.45) 74%,
-      rgba(14, 4, 8, 0.8) 100%
-    ),
-    radial-gradient(
-      ellipse 75% 65% at 50% 42%,
-      rgba(255, 240, 214, 0.12),
-      rgba(255, 240, 214, 0.05) 55%,
-      transparent 78%
-    );
-}
-
-/* Irregularly spaced stops so the flicker doesn't read as a metronome */
-@keyframes cinema-beam-flicker {
-  0%,
-  100% {
-    opacity: 0.85;
-  }
-  7% {
-    opacity: 1;
-  }
-  12% {
-    opacity: 0.6;
-  }
-  19% {
-    opacity: 0.9;
-  }
-  27% {
-    opacity: 0.7;
-  }
-  38% {
-    opacity: 1;
-  }
-  44% {
-    opacity: 0.65;
-  }
-  57% {
-    opacity: 0.88;
-  }
-  66% {
-    opacity: 0.74;
-  }
-  79% {
-    opacity: 1;
-  }
-  87% {
-    opacity: 0.58;
-  }
-  93% {
-    opacity: 0.9;
-  }
-}
-
-@keyframes cinema-beam-drift {
-  from {
-    transform: translateX(-1rem);
-  }
-  to {
-    transform: translateX(1rem);
-  }
-}
-
-/* Screening-room curtains on the section's side edges: draped fabric
-   suggested purely with layered gradients — deep shadow valleys, warm
-   wine-black faces, and gold sheen catching the fold edges. The whole
-   drape fades into the section at its inner edge and over the top and
-   bottom ~15%. Right side mirrors the left. Hidden below md. */
+/* Screening-room curtains on the films section's side edges: deep wine
+   folds, fading toward the screen (inner edge) and out at the top and
+   bottom so they hang in the shared sky without a hard edge. The fold
+   pattern drifts a few px back and forth, slowly, like fabric settling.
+   Hidden below lg. */
 .cinema-curtain {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: clamp(4rem, 8vw, 10rem);
+  width: 130px;
   display: none;
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    transparent,
-    #000 15%,
-    #000 85%,
-    transparent
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    transparent,
-    #000 15%,
-    #000 85%,
-    transparent
-  );
+  opacity: 0.85;
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  animation: cinema-curtain-sway 21s ease-in-out infinite;
 }
 
 .cinema-curtain--left {
   left: 0;
+  background-image: repeating-linear-gradient(
+    90deg,
+    #2b0a10 0px,
+    #4a1219 16px,
+    #230810 32px,
+    #3b0e15 46px
+  );
+  -webkit-mask-image: linear-gradient(90deg, #000 30%, transparent 100%),
+    linear-gradient(180deg, transparent 0%, #000 22%, #000 78%, transparent 100%);
+  mask-image: linear-gradient(90deg, #000 30%, transparent 100%),
+    linear-gradient(180deg, transparent 0%, #000 22%, #000 78%, transparent 100%);
 }
 
 .cinema-curtain--right {
   right: 0;
-  transform: scaleX(-1);
+  background-image: repeating-linear-gradient(
+    270deg,
+    #2b0a10 0px,
+    #4a1219 16px,
+    #230810 32px,
+    #3b0e15 46px
+  );
+  -webkit-mask-image: linear-gradient(270deg, #000 30%, transparent 100%),
+    linear-gradient(180deg, transparent 0%, #000 22%, #000 78%, transparent 100%);
+  mask-image: linear-gradient(270deg, #000 30%, transparent 100%),
+    linear-gradient(180deg, transparent 0%, #000 22%, #000 78%, transparent 100%);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .cinema-curtain {
     display: block;
   }
 }
 
-.cinema-curtain::before,
-.cinema-curtain::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  -webkit-mask-image: linear-gradient(to right, #000 40%, transparent);
-  mask-image: linear-gradient(to right, #000 40%, transparent);
-}
-
-/* Fabric body: each primary fold runs shadow valley → wine-lit face →
-   gold edge → back into shadow; a broader offset period underneath keeps
-   the drape from looking machine-pleated */
-.cinema-curtain::before {
-  background-image: repeating-linear-gradient(
-      90deg,
-      rgba(0, 0, 0, 0.8) 0,
-      rgba(74, 34, 34, 0.4) 1rem,
-      rgba(240, 198, 124, 0.11) 1.625rem,
-      rgba(74, 34, 34, 0.36) 2.25rem,
-      rgba(0, 0, 0, 0.8) 3.5rem
-    ),
-    repeating-linear-gradient(
-      90deg,
-      rgba(0, 0, 0, 0.45) 0,
-      transparent 1.75rem,
-      rgba(58, 28, 30, 0.32) 3rem,
-      rgba(0, 0, 0, 0.45) 5.25rem
-    ),
-    linear-gradient(
-      to right,
-      rgba(50, 24, 26, 0.7),
-      rgba(50, 24, 26, 0.32) 60%,
-      transparent
-    );
-}
-
-/* Gold sheen riding the fold edges; two periods drifting apart make the
-   fabric breathe */
-.cinema-curtain::after {
-  background-image: repeating-linear-gradient(
-      90deg,
-      transparent 0,
-      rgba(244, 205, 134, 0.12) 1.5rem,
-      transparent 1.875rem,
-      transparent 3.5rem
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent 0,
-      rgba(233, 185, 110, 0.06) 2.5rem,
-      transparent 5.25rem
-    );
-  opacity: 0.9;
-  animation: cinema-curtain-sway 21s ease-in-out infinite;
-}
-
 @keyframes cinema-curtain-sway {
   0%,
   100% {
-    background-position: 0 0, 0 0;
-    opacity: 0.8;
+    background-position: 0 0;
   }
   33% {
-    background-position: 0.625rem 0, -0.5rem 0;
-    opacity: 1;
+    background-position: 0.625rem 0;
   }
   66% {
-    background-position: -0.375rem 0, 0.75rem 0;
-    opacity: 0.88;
+    background-position: -0.375rem 0;
   }
 }
 
@@ -874,13 +707,7 @@
     transform: none !important;
   }
 
-  .cinema-screening::before {
-    animation: none;
-    opacity: 0.9;
-    transform: none;
-  }
-
-  .cinema-curtain::after {
+  .cinema-curtain {
     animation: none;
   }
 

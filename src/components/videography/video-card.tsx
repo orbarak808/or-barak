@@ -27,6 +27,11 @@ interface VideoCardProps {
   showTitle?: boolean;
   onClick?: () => void;
   className?: string;
+  /**
+   * Off when a parent animates the card in together with its caption, so
+   * the card doesn't animate twice
+   */
+  entrance?: boolean;
 }
 
 export function VideoCard({
@@ -35,7 +40,8 @@ export function VideoCard({
   size = "small",
   showTitle = false,
   onClick,
-  className
+  className,
+  entrance = true
 }: VideoCardProps) {
   const isYouTube = isYouTubeUrl(video.url);
   const youtubeId = isYouTube ? getYouTubeVideoId(video.url) : null;
@@ -58,11 +64,13 @@ export function VideoCard({
 
   return (
     <motion.div
-      {...(reveal ?? {
-        initial: { opacity: 0, y: 20 },
-        animate: { opacity: 1, y: 0 },
-        transition: { duration: 0.5, delay: index * 0.05 }
-      })}
+      {...(entrance
+        ? (reveal ?? {
+            initial: { opacity: 0, y: 20 },
+            animate: { opacity: 1, y: 0 },
+            transition: { duration: 0.5, delay: index * 0.05 }
+          })
+        : {})}
       className={cn(
         // 16:9 matches YouTube thumbnails exactly, so object-cover never crops
         "group relative cursor-pointer overflow-hidden rounded-lg border border-zinc-800 bg-black transition-all duration-300 hover:border-zinc-600 hover:shadow-xl",
