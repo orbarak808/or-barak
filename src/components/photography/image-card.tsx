@@ -30,12 +30,13 @@ export function ImageCard({
 }: ImageCardProps) {
   // On the landing page the card rises in as it scrolls into view instead
   // of on mount; a light stagger across each row
-  const reveal = useScrollReveal((index % 3) * 0.06);
+  const reveal = useScrollReveal((index % 3) * 0.06, "image");
 
   return (
     // A button, so the photo can be opened from the keyboard and the
     // lightbox can hand focus back to it on close
     <motion.button
+      key={reveal?.["data-reveal"]}
       type='button'
       aria-label={image.alt}
       {...(reveal ?? {

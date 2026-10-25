@@ -168,11 +168,12 @@ function JustifiedTile({
   style?: React.CSSProperties;
 }) {
   const [loaded, setLoaded] = useState(false);
-  const reveal = useScrollReveal();
+  const reveal = useScrollReveal(0, "image");
   const ratio = aspect(image);
 
   return (
     <motion.button
+      key={reveal?.["data-reveal"]}
       type='button'
       aria-label={image.alt}
       onClick={(event) => onOpen(event.currentTarget)}

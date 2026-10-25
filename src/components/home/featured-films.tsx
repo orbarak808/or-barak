@@ -34,7 +34,7 @@ export function FeaturedFilms({ videos }: { videos: VideoItem[] }) {
       <div className='hidden md:block md:space-y-12'>
         <div className='grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-6'>
           {largeVideos.map((video, index) => (
-            <Reveal key={video.url} delay={index * 0.06}>
+            <Reveal key={video.url} delay={index * 0.06} kind='image'>
               <figure className='flex flex-col gap-4'>
                 <VideoCard
                   video={video}
@@ -49,7 +49,7 @@ export function FeaturedFilms({ videos }: { videos: VideoItem[] }) {
         </div>
         <div className='grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-6 lg:grid-cols-4'>
           {smallVideos.map((video, index) => (
-            <Reveal key={video.url} delay={(index % 4) * 0.06}>
+            <Reveal key={video.url} delay={(index % 4) * 0.06} kind='image'>
               <figure className='flex flex-col gap-3'>
                 <VideoCard
                   video={video}
@@ -129,7 +129,7 @@ function FilmCarousel({
     });
 
   return (
-    <Reveal className='md:hidden'>
+    <Reveal className='md:hidden' kind='image'>
       <div
         ref={rowRef}
         onScroll={onScroll}

@@ -51,7 +51,7 @@ export function VideoCard({
   const [thumbnailSrc, setThumbnailSrc] = useState(thumbnail);
   // On the landing page the card rises in as it scrolls into view instead
   // of on mount; a light stagger across each row
-  const reveal = useScrollReveal((index % 4) * 0.06);
+  const reveal = useScrollReveal((index % 4) * 0.06, "image");
 
   // Extract year and type from title if available
   // Handle formats like "ABF 2025 (Short Documentary)" or "Title (Type)"
@@ -64,6 +64,7 @@ export function VideoCard({
 
   return (
     <motion.div
+      key={reveal?.["data-reveal"]}
       {...(entrance
         ? (reveal ?? {
             initial: { opacity: 0, y: 20 },
