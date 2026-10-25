@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { socialLinks } from "@/lib/content/about";
 import { Reveal } from "@/components/ui/scroll-reveal";
+import { SectionHeading } from "@/components/home/section-heading";
 
 const contactSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
@@ -33,10 +34,10 @@ const contactSchema = z.object({
 type ContactFormValues = z.infer<typeof contactSchema>;
 
 const fieldClasses =
-  "bg-transparent border-0 border-b border-zinc-700 dark:border-zinc-700 rounded-none px-0 py-3 text-base sm:text-lg text-white placeholder:text-zinc-600 focus-visible:ring-0 focus-visible:border-amber-500 dark:focus-visible:border-amber-400 transition-colors font-sans w-full touch-manipulation";
+  "bg-transparent dark:bg-transparent border-0 border-b border-[#6B6255] dark:border-[#6B6255] rounded-none px-0 py-3 text-[17px] text-[#EDE6D8] placeholder:text-[#8F887C] focus-visible:ring-0 focus-visible:border-[#D4AF37] dark:focus-visible:border-[#D4AF37] transition-colors font-sans w-full touch-manipulation";
 
 const labelClasses =
-  "sky-text-muted text-zinc-500 dark:text-zinc-500 uppercase tracking-wider text-xs font-sans mb-2 block";
+  "text-[#A39B8D] dark:text-[#A39B8D] uppercase tracking-[0.14em] text-xs font-semibold font-sans mb-2 block";
 
 type ContactProps = {
   /** Merged onto the section; the landing page clears its fill */
@@ -86,29 +87,20 @@ const Contact = ({ className }: ContactProps) => {
         className
       )}
     >
-      <div aria-hidden='true' className='contact-fx' />
       <div aria-hidden='true' className='contact-reels' />
       <div className='container mx-auto max-w-lg w-full'>
-        <Reveal className='text-center space-y-2.5 sm:space-y-3 mb-8 sm:mb-10'>
-          <Typography
-            variant='caption1'
-            className='text-zinc-400 dark:text-zinc-500 uppercase tracking-wider text-xs sm:text-sm font-sans block'
-          >
-            {t("contact_header")}
-          </Typography>
-          <Typography
-            variant='h2'
-            className='font-serif text-3xl sm:text-4xl text-white leading-tight'
-          >
-            {t("contact_heading")}
-          </Typography>
-          <Typography
-            variant='body1'
-            className='text-zinc-400 dark:text-zinc-300 text-sm sm:text-base md:text-lg leading-relaxed font-sans'
-          >
-            {t("contact_intro")}
-          </Typography>
-        </Reveal>
+        <div className='mb-10 space-y-5 text-center'>
+          <SectionHeading
+            align='center'
+            eyebrow={t("contact_header")}
+            title={t("contact_heading")}
+          />
+          <Reveal>
+            <p className='text-[17px] leading-[1.65] text-[#B5AD9F]'>
+              {t("contact_intro")}
+            </p>
+          </Reveal>
+        </div>
 
         <Reveal>
           <Form {...form}>
@@ -199,8 +191,8 @@ const Contact = ({ className }: ContactProps) => {
                 type='submit'
                 disabled={isLoading}
                 className={cn(
-                  "w-full border-2 border-amber-500 dark:border-amber-400 bg-transparent hover:bg-amber-500/10 text-white font-sans uppercase tracking-wider text-sm sm:text-base py-5 sm:py-6 rounded-none transition-all min-h-[52px] touch-manipulation",
-                  "hover:border-amber-400 dark:hover:border-amber-300 active:bg-amber-500/20"
+                  "w-full border border-[#D4AF37] dark:border-[#D4AF37] bg-transparent dark:bg-transparent hover:bg-[#D4AF37]/10 dark:hover:bg-[#D4AF37]/10 text-[#EDE6D8] font-sans text-[13px] font-semibold uppercase tracking-[0.22em] py-5 sm:py-6 rounded-none transition-colors min-h-[52px] touch-manipulation",
+                  "active:bg-[#D4AF37]/20"
                 )}
               >
                 {isLoading ? (
@@ -223,7 +215,7 @@ const Contact = ({ className }: ContactProps) => {
               href={link.href}
               target='_blank'
               rel='noopener noreferrer'
-              className='sky-text-link text-zinc-500 dark:text-zinc-500 uppercase tracking-wider text-xs font-sans hover:text-amber-500 dark:hover:text-amber-400 transition-colors py-2 touch-manipulation'
+              className='text-[#B5AD9F] dark:text-[#B5AD9F] uppercase tracking-[0.14em] text-[13px] font-sans hover:text-[#D4AF37] dark:hover:text-[#D4AF37] transition-colors py-2 touch-manipulation'
             >
               {t(link.name)}
             </Link>

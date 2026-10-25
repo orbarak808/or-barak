@@ -106,7 +106,7 @@ export function HeroSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.85 }}
-            className='text-[13px] tracking-[0.12em] text-[#8F887C]'
+            className='text-[13px] tracking-[0.12em] text-[#9C9588]'
           >
             {t("home_hero_subtitle_detail")}
           </motion.p>

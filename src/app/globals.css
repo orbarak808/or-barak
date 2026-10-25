@@ -329,8 +329,8 @@
     to bottom,
     rgba(6, 5, 6, 0.5) 0%,
     transparent 16%,
-    transparent 30%,
-    rgba(6, 5, 6, 0.85) 58%,
+    transparent 26%,
+    rgba(6, 5, 6, 0.85) 48%,
     #060506 100%
   );
 }
@@ -350,21 +350,6 @@
       #060506 100%
     );
   }
-}
-
-/* Film-grain jitter, stepped so it reads as grain rather than motion */
-@keyframes hero-grain-shift {
-  0% { transform: translate3d(0, 0, 0); }
-  10% { transform: translate3d(-2rem, 1rem, 0); }
-  20% { transform: translate3d(1rem, -2rem, 0); }
-  30% { transform: translate3d(-1rem, -1rem, 0); }
-  40% { transform: translate3d(2rem, 2rem, 0); }
-  50% { transform: translate3d(-2rem, -2rem, 0); }
-  60% { transform: translate3d(2rem, -1rem, 0); }
-  70% { transform: translate3d(0, 2rem, 0); }
-  80% { transform: translate3d(-1rem, 0, 0); }
-  90% { transform: translate3d(1rem, 1rem, 0); }
-  100% { transform: translate3d(0, 0, 0); }
 }
 
 /* Screening-room curtains on the films section's side edges: deep wine
@@ -510,95 +495,18 @@
   }
 }
 
-/* Contact section: the reel is still running. Three layers on black —
-   1. .contact-reels: a strip of 35mm stock down each edge whose perforation
-      pattern scrolls steadily downward like film through a projector.
-      ::before holds the static chrome (film base + edge highlights);
-      ::after holds only the repeating layers (sprocket holes, frame lines
-      confined to the strips) so the run animation shifts them cleanly.
-      Gradient positions are strictly 2-value — Chrome rejects 3-value
-      positions inside gradients and drops the whole declaration.
-   2. Grain across the center (CSS-embedded SVG turbulence, jittering in
-      steps), eased behind the content column by a radial mask.
-   3. A soft warm light drifting slowly across the section.
-   No horizontal lines cross the content area. Everything sits at z-index -1
-   inside the section's stacking context (isolate), behind all content.
-   Grain and light live on .contact-fx rather than the section itself so
-   that, on the landing page, they can fade out at the section's top and
-   bottom without fading the content. */
+/* Contact section: the reel is still running. A strip of 35mm stock down
+   each edge (.contact-reels) whose perforation pattern scrolls steadily
+   downward like film through a projector. ::after holds the repeating
+   layers (sprocket holes, frame lines confined to the strips) so the run
+   animation shifts them cleanly. Gradient positions are strictly 2-value —
+   Chrome rejects 3-value positions inside gradients and drops the whole
+   declaration. No horizontal lines cross the content area; the reels sit at
+   z-index -1 inside the section's stacking context (isolate), behind all
+   content. The warm light comes from the shared sky on the landing page. */
 .contact-atmosphere {
   position: relative;
   overflow: hidden;
-}
-
-.contact-fx {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.contact-fx::before,
-.contact-fx::after {
-  content: "";
-  position: absolute;
-  pointer-events: none;
-}
-
-/* Grain: oversized so the step-jitter never exposes an edge; the mask keeps
-   it quiet directly behind the heading and form */
-.contact-fx::before {
-  inset: -6rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 240px 240px;
-  opacity: 0.15;
-  -webkit-mask-image: radial-gradient(
-    ellipse 55% 60% at 50% 45%,
-    rgba(0, 0, 0, 0.45),
-    rgba(0, 0, 0, 0.6) 50%,
-    #000 85%
-  );
-  mask-image: radial-gradient(
-    ellipse 55% 60% at 50% 45%,
-    rgba(0, 0, 0, 0.45),
-    rgba(0, 0, 0, 0.6) 50%,
-    #000 85%
-  );
-  animation: hero-grain-shift 9s steps(10) infinite;
-}
-
-/* Drifting projection light */
-.contact-fx::after {
-  inset: 0;
-  background-image: radial-gradient(
-    closest-side,
-    rgba(253, 232, 185, 0.28) 0%,
-    rgba(253, 232, 185, 0.14) 40%,
-    rgba(253, 232, 185, 0.04) 70%,
-    transparent 100%
-  );
-  background-repeat: no-repeat;
-  background-size: 48rem 48rem;
-  background-position: 10% 0%;
-  opacity: 0.5;
-  animation: contact-light-drift 26s ease-in-out infinite;
-}
-
-@keyframes contact-light-drift {
-  0%,
-  100% {
-    background-position: 10% 0%;
-    opacity: 0.4;
-  }
-  33% {
-    background-position: 80% 30%;
-    opacity: 0.55;
-  }
-  66% {
-    background-position: 25% 85%;
-    opacity: 0.45;
-  }
 }
 
 /* Running reels at the edges */
@@ -677,7 +585,6 @@
 /* On the landing page the contact effects sit on the shared sky: fade them
    out over the section's top and bottom ~15% like the other overlays. The
    standalone contact page keeps its black fill and shorter fades. */
-[data-sky] .contact-fx,
 [data-sky] .contact-reels {
   -webkit-mask-image: linear-gradient(
     to bottom,
@@ -709,15 +616,6 @@
 
   .cinema-curtain {
     animation: none;
-  }
-
-  .contact-fx::before {
-    animation: none;
-  }
-
-  .contact-fx::after {
-    animation: none;
-    opacity: 0.45;
   }
 
   .contact-reels::after {

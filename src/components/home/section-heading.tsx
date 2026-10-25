@@ -19,6 +19,7 @@ type SectionHeadingProps = {
   title: React.ReactNode;
   /** Links on the right of the heading (below it on phones) */
   aside?: React.ReactNode;
+  align?: "start" | "center";
   className?: string;
 };
 
@@ -30,16 +31,25 @@ export function SectionHeading({
   eyebrow,
   title,
   aside,
+  align = "start",
   className
 }: SectionHeadingProps) {
   return (
     <Reveal
       className={cn(
-        "flex flex-col gap-6 md:flex-row md:items-end md:justify-between",
+        "flex flex-col gap-6",
+        align === "center"
+          ? "items-center text-center"
+          : "md:flex-row md:items-end md:justify-between",
         className
       )}
     >
-      <div className='flex flex-col gap-4'>
+      <div
+        className={cn(
+          "flex flex-col gap-4",
+          align === "center" && "items-center"
+        )}
+      >
         {eyebrow && <p className={eyebrowClasses}>{eyebrow}</p>}
         <h2 className='font-serif text-[44px] leading-[1.05] tracking-[-0.01em] text-[#EDE6D8] md:text-[64px]'>
           {title}
