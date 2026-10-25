@@ -547,3 +547,16 @@ const featuredRank = (image: PhotographyImage): number => {
 export const featuredPhotos: PhotographyImage[] = getAllPhotographyImages()
   .filter((image) => image.featured === true)
   .sort((a, b) => featuredRank(a) - featuredRank(b));
+
+// Frames printed on the contact section's film strips
+const filmStripPhotoIds = [
+  ...featuredPhotoOrder,
+  "selected-1",
+  "selected-2",
+  "selected-6",
+  "top-1"
+];
+
+export const filmStripPhotos: PhotographyImage[] = filmStripPhotoIds
+  .map((id) => getAllPhotographyImages().find((image) => image.id === id))
+  .filter((image): image is PhotographyImage => !!image);

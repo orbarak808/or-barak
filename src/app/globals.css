@@ -555,111 +555,360 @@
   }
 }
 
-/* Contact section: the reel is still running. A strip of 35mm stock down
-   each edge (.contact-reels) whose perforation pattern scrolls steadily
-   downward like film through a projector. ::after holds the repeating
-   layers (sprocket holes, frame lines confined to the strips) so the run
-   animation shifts them cleanly. Gradient positions are strictly 2-value —
-   Chrome rejects 3-value positions inside gradients and drops the whole
-   declaration. No horizontal lines cross the content area; the reels sit at
-   z-index -1 inside the section's stacking context (isolate), behind all
-   content. The warm light comes from the shared sky on the landing page. */
+/* Contact section (src/components/contact/film-strips.tsx): two strips of
+   35mm print stock, one per side, angled and running off the section's top
+   and bottom, behind the content (z-index -1 inside the section's isolate
+   context). Each strip: warm translucent celluloid with slow density
+   variation, rounded sprocket holes down both edges (dark inside, a faint
+   rim where light catches the edge), image frames graded like a projected
+   print, and edge print along the outer margin. Motion is transform and
+   opacity only: a slow drift (one frame every 4s, over a duplicated column
+   so it loops), an irregular sub-pixel gate weave, dust and a scratch that
+   flicker in and out, and a breathing light leak at the outer edge. */
 .contact-atmosphere {
   position: relative;
   overflow: hidden;
 }
 
-/* Running reels at the edges */
-.contact-reels {
+.film-strips {
   position: absolute;
   inset: 0;
   z-index: -1;
+  display: none;
+  overflow: hidden;
   pointer-events: none;
   -webkit-mask-image: linear-gradient(
     to bottom,
     transparent,
-    #000 2.5rem,
-    #000 calc(100% - 2.5rem),
+    #000 15%,
+    #000 85%,
     transparent
   );
   mask-image: linear-gradient(
     to bottom,
     transparent,
-    #000 2.5rem,
-    #000 calc(100% - 2.5rem),
+    #000 15%,
+    #000 85%,
     transparent
   );
 }
 
-/* 35mm stock drawn as one SVG tile per frame (4 perforations per column at
-   real film proportions: rounded-rect perfs ~2:3 w:h on a tight pitch,
-   lighter base margins, dark exposed image area, frame separator, edge
-   highlights where light catches the celluloid). The tile repeats down each
-   edge; a long-period tonal wash on top keeps the stock from looking
-   printed. Both scroll together — the shift per cycle (22.4rem) is a whole
-   number of frames and wash periods, so the loop is seamless. */
-.contact-reels::after {
+@media (min-width: 1024px) {
+  .film-strips {
+    display: block;
+  }
+}
+
+.film-strip-rail {
+  --strip-w: 140px;
+  position: absolute;
+  top: -12%;
+  bottom: -12%;
+  width: var(--strip-w);
+  overflow: hidden;
+  opacity: 0.92;
+}
+
+/* Centred in the gutter beside the 32rem content column */
+.film-strip-rail--left {
+  left: max(1.5rem, calc((100% - 32rem) / 4 - var(--strip-w) / 2));
+  transform: rotate(-2.5deg);
+}
+
+.film-strip-rail--right {
+  right: max(1.5rem, calc((100% - 32rem) / 4 - var(--strip-w) / 2));
+  transform: rotate(2deg) scaleX(-1);
+}
+
+.film-strip-weave {
+  height: 100%;
+  animation: film-strip-weave 2.9s steps(1, end) infinite;
+}
+
+.film-strip-rail--right .film-strip-weave {
+  animation-duration: 3.4s;
+}
+
+.film-strip-track {
+  animation: film-strip-drift 80s linear infinite;
+}
+
+.film-strip-rail--right .film-strip-track {
+  animation-delay: -37s;
+}
+
+/* One copy of the frame column: celluloid base, density drift along the
+   length, sprocket holes in the outer (24px) and inner (15px) margins. The
+   right strip is mirrored as a whole, so its edge print and wider margin
+   sit on its outer edge too. */
+.film-strip-copy {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='16'%3E%3Crect x='0.4' y='5' width='8.2' height='6' rx='1.5' fill='%23070504' stroke='%23FFD6A0' stroke-opacity='0.28' stroke-width='0.8'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='16'%3E%3Crect x='0.4' y='5' width='8.2' height='6' rx='1.5' fill='%23070504' stroke='%23FFD6A0' stroke-opacity='0.28' stroke-width='0.8'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(
+      180deg,
+      rgba(255, 220, 170, 0.035) 0px,
+      rgba(0, 0, 0, 0.08) 120px,
+      rgba(255, 220, 170, 0.02) 200px,
+      rgba(255, 220, 170, 0.035) 320px
+    ),
+    linear-gradient(
+      90deg,
+      #2a1d12,
+      #3a2716 30%,
+      #36241a 70%,
+      #2a1d12
+    );
+  background-size: 9px 16px, 9px 16px, auto, auto;
+  background-repeat: repeat-y, repeat-y, repeat, no-repeat;
+  background-position: 12px 0, right 3px top 0, 0 0, 0 0;
+}
+
+.film-strip-frame {
+  position: relative;
+  height: 64px;
+}
+
+/* 1px of base above and below each image leaves a thin frame line */
+.film-strip-image {
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  left: 24px;
+  right: 15px;
+  width: calc(100% - 39px);
+  height: 62px;
+  object-fit: cover;
+  filter: sepia(0.35) contrast(0.9) brightness(0.75);
+}
+
+.film-strip-rail--right .film-strip-image {
+  /* Un-mirror the picture itself */
+  transform: scaleX(-1);
+}
+
+.film-strip-edge {
+  position: absolute;
+  top: 4px;
+  left: 2px;
+  writing-mode: vertical-rl;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 7px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  color: #e8b878;
+  opacity: 0.45;
+}
+
+.film-strip-rail--right .film-strip-edge {
+  transform: scaleX(-1);
+}
+
+/* Dust: two sets of specks that flash at different moments */
+.film-strip-dust,
+.film-strip-scratch,
+.film-strip-leak {
+  position: absolute;
+  inset: 0;
+}
+
+.film-strip-dust::before,
+.film-strip-dust::after {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: repeating-linear-gradient(
-      to bottom,
-      rgba(255, 244, 224, 0.04) 0rem,
-      rgba(0, 0, 0, 0.12) 6rem,
-      rgba(255, 244, 224, 0.02) 11rem,
-      rgba(0, 0, 0, 0.1) 17rem,
-      rgba(255, 244, 224, 0.04) 22.4rem
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      rgba(255, 244, 224, 0.04) 0rem,
-      rgba(0, 0, 0, 0.12) 6rem,
-      rgba(255, 244, 224, 0.02) 11rem,
-      rgba(0, 0, 0, 0.1) 17rem,
-      rgba(255, 244, 224, 0.04) 22.4rem
-    ),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='52' height='51.2' viewBox='0 0 52 51.2'%3E%3Crect width='52' height='51.2' fill='%2346423c'/%3E%3Crect x='14.5' width='23' height='51.2' fill='%23171513'/%3E%3Crect x='14.5' width='23' height='1.8' fill='%234a463f'/%3E%3Cg fill='%230b0a09' stroke='%2397845f' stroke-opacity='0.4' stroke-width='0.7'%3E%3Crect x='5.5' y='2.65' width='5' height='7.5' rx='1.5'/%3E%3Crect x='41.5' y='2.65' width='5' height='7.5' rx='1.5'/%3E%3Crect x='5.5' y='15.45' width='5' height='7.5' rx='1.5'/%3E%3Crect x='41.5' y='15.45' width='5' height='7.5' rx='1.5'/%3E%3Crect x='5.5' y='28.25' width='5' height='7.5' rx='1.5'/%3E%3Crect x='41.5' y='28.25' width='5' height='7.5' rx='1.5'/%3E%3Crect x='5.5' y='41.05' width='5' height='7.5' rx='1.5'/%3E%3Crect x='41.5' y='41.05' width='5' height='7.5' rx='1.5'/%3E%3C/g%3E%3Crect width='0.9' height='51.2' fill='%239a8862' opacity='0.38'/%3E%3Crect x='51.1' width='0.9' height='51.2' fill='%239a8862' opacity='0.38'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='52' height='51.2' viewBox='0 0 52 51.2'%3E%3Crect width='52' height='51.2' fill='%2346423c'/%3E%3Crect x='14.5' width='23' height='51.2' fill='%23171513'/%3E%3Crect x='14.5' width='23' height='1.8' fill='%234a463f'/%3E%3Cg fill='%230b0a09' stroke='%2397845f' stroke-opacity='0.4' stroke-width='0.7'%3E%3Crect x='5.5' y='2.65' width='5' height='7.5' rx='1.5'/%3E%3Crect x='41.5' y='2.65' width='5' height='7.5' rx='1.5'/%3E%3Crect x='5.5' y='15.45' width='5' height='7.5' rx='1.5'/%3E%3Crect x='41.5' y='15.45' width='5' height='7.5' rx='1.5'/%3E%3Crect x='5.5' y='28.25' width='5' height='7.5' rx='1.5'/%3E%3Crect x='41.5' y='28.25' width='5' height='7.5' rx='1.5'/%3E%3Crect x='5.5' y='41.05' width='5' height='7.5' rx='1.5'/%3E%3Crect x='41.5' y='41.05' width='5' height='7.5' rx='1.5'/%3E%3C/g%3E%3Crect width='0.9' height='51.2' fill='%239a8862' opacity='0.38'/%3E%3Crect x='51.1' width='0.9' height='51.2' fill='%239a8862' opacity='0.38'/%3E%3C/svg%3E");
-  background-size: 3.25rem 22.4rem, 3.25rem 22.4rem, 3.25rem 3.2rem,
-    3.25rem 3.2rem;
-  background-position: 0 0, 100% 0, 0 0, 100% 0;
-  background-repeat: repeat-y;
-  animation: contact-reel-run 11.2s linear infinite;
+  opacity: 0;
 }
 
-@keyframes contact-reel-run {
+.film-strip-dust::before {
+  background-image: radial-gradient(
+      circle at 38% 22%,
+      rgba(255, 240, 220, 0.7) 0 1px,
+      transparent 1.6px
+    ),
+    radial-gradient(
+      circle at 62% 61%,
+      rgba(255, 240, 220, 0.55) 0 1.2px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 47% 83%,
+      rgba(20, 12, 6, 0.8) 0 1px,
+      transparent 1.6px
+    );
+  animation: film-strip-dust-a 7.3s steps(1, end) infinite;
+}
+
+.film-strip-dust::after {
+  background-image: radial-gradient(
+      circle at 55% 35%,
+      rgba(20, 12, 6, 0.8) 0 1.3px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 33% 70%,
+      rgba(255, 240, 220, 0.6) 0 0.9px,
+      transparent 1.5px
+    );
+  animation: film-strip-dust-b 9.1s steps(1, end) infinite;
+}
+
+/* A thin vertical scratch through the picture, on for a few seconds at a
+   time with a slight flicker */
+.film-strip-scratch {
+  left: 58%;
+  right: auto;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(255, 240, 220, 0.3) 20%,
+    rgba(255, 240, 220, 0.12) 50%,
+    rgba(255, 240, 220, 0.28) 80%,
+    transparent
+  );
+  opacity: 0;
+  animation: film-strip-scratch 13s steps(1, end) infinite;
+}
+
+.film-strip-rail--right .film-strip-scratch {
+  left: 41%;
+  animation-delay: -6s;
+}
+
+/* Light leak bleeding in from the outer edge, slowly breathing */
+.film-strip-leak {
+  background: radial-gradient(
+    ellipse 70% 28% at 0% 42%,
+    rgba(232, 140, 60, 0.4),
+    rgba(232, 140, 60, 0.12) 45%,
+    transparent 75%
+  );
+  opacity: 0.5;
+  animation: film-strip-leak 11s ease-in-out infinite alternate;
+}
+
+.film-strip-rail--right .film-strip-leak {
+  animation-delay: -5s;
+}
+
+/* Off screen: everything holds still */
+.film-strips[data-paused] *,
+.film-strips[data-paused] *::before,
+.film-strips[data-paused] *::after {
+  animation-play-state: paused;
+}
+
+@keyframes film-strip-drift {
   from {
-    background-position: 0 0, 100% 0, 0 0, 100% 0;
+    transform: translate3d(0, 0, 0);
   }
   to {
-    background-position: 0 22.4rem, 100% 22.4rem, 0 22.4rem, 100% 22.4rem;
+    transform: translate3d(0, -50%, 0);
   }
 }
 
-@media (max-width: 639px) {
-  .contact-reels {
-    display: none;
+/* Irregular rhythm, held positions (steps), well under a pixel or so */
+@keyframes film-strip-weave {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  13% {
+    transform: translate3d(0.6px, 0, 0);
+  }
+  21% {
+    transform: translate3d(-0.4px, 0, 0);
+  }
+  34% {
+    transform: translate3d(0.9px, 0, 0);
+  }
+  41% {
+    transform: translate3d(0.2px, 0, 0);
+  }
+  58% {
+    transform: translate3d(-0.7px, 0, 0);
+  }
+  66% {
+    transform: translate3d(0.5px, 0, 0);
+  }
+  79% {
+    transform: translate3d(-0.3px, 0, 0);
+  }
+  88% {
+    transform: translate3d(0.8px, 0, 0);
   }
 }
 
-/* On the landing page the contact effects sit on the shared sky: fade them
-   out over the section's top and bottom ~15% like the other overlays. The
-   standalone contact page keeps its black fill and shorter fades. */
-[data-sky] .contact-reels {
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    transparent,
-    #000 15%,
-    #000 85%,
-    transparent
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    transparent,
-    #000 15%,
-    #000 85%,
-    transparent
-  );
+@keyframes film-strip-dust-a {
+  0% {
+    opacity: 0;
+  }
+  11% {
+    opacity: 0.8;
+  }
+  12.5% {
+    opacity: 0;
+  }
+  46% {
+    opacity: 0.55;
+  }
+  47.5% {
+    opacity: 0;
+  }
+  81% {
+    opacity: 0.7;
+  }
+  82% {
+    opacity: 0;
+  }
+}
+
+@keyframes film-strip-dust-b {
+  0% {
+    opacity: 0;
+  }
+  27% {
+    opacity: 0.7;
+  }
+  28.5% {
+    opacity: 0;
+  }
+  63% {
+    opacity: 0.6;
+  }
+  64% {
+    opacity: 0;
+  }
+}
+
+@keyframes film-strip-scratch {
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.8;
+  }
+  32% {
+    opacity: 0.45;
+  }
+  34% {
+    opacity: 0.85;
+  }
+  41% {
+    opacity: 0.5;
+  }
+  44% {
+    opacity: 0;
+  }
+}
+
+@keyframes film-strip-leak {
+  from {
+    opacity: 0.25;
+  }
+  to {
+    opacity: 0.75;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -678,7 +927,15 @@
     animation: none;
   }
 
-  .contact-reels::after {
+  /* Film strips: static, no drift, weave or flicker */
+  .film-strips *,
+  .film-strips *::before,
+  .film-strips *::after {
     animation: none;
+  }
+
+  .film-strip-dust,
+  .film-strip-scratch {
+    display: none;
   }
 }
