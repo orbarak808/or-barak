@@ -3,10 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { PhotographyImage } from "@/lib/types/photography";
-import { PhotoTag } from "@/lib/enums/photo-tags.enum";
 import { useScrollReveal } from "@/components/ui/scroll-reveal";
 import { ImageLightbox } from "./image-lightbox";
 
@@ -90,65 +88,25 @@ function useGalleryBox(ref: React.RefObject<HTMLDivElement | null>) {
 }
 
 export function JustifiedGallery({ images }: { images: PhotographyImage[] }) {
-  const t = useTranslations();
-  const [filter, setFilter] = useState<string | null>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const openerRef = useRef<HTMLElement | null>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
   const box = useGalleryBox(galleryRef);
 
-  // Only the tags that are actually used, in the tag list's order
-  const tags = useMemo(() => {
-    const used = new Set(images.map((image) => image.category));
-    return Object.values(PhotoTag).filter((tag) => used.has(tag));
-  }, [images]);
-
-  const visible = useMemo(
-    () =>
-      filter ? images.filter((image) => image.category === filter) : images,
-    [images, filter]
-  );
-
   const rows = useMemo(
-    () => (box ? layoutRows(visible, box.width, box.target) : null),
-    [visible, box]
+    () => (box ? layoutRows(images, box.width, box.target) : null),
+    [images, box]
   );
 
   const open = (image: PhotographyImage, element: HTMLElement) => {
     openerRef.current = element;
-    setLightboxIndex(visible.indexOf(image));
+    setLightboxIndex(images.indexOf(image));
     setLightboxOpen(true);
   };
 
   return (
-    <div className='space-y-8'>
-      <div
-        role='group'
-        aria-label={t("photography_filter_label")}
-        className='flex flex-wrap gap-x-7 gap-y-3'
-      >
-        {[null, ...tags].map((tag) => {
-          const active = filter === tag;
-          return (
-            <button
-              key={tag ?? "all"}
-              type='button'
-              aria-pressed={active}
-              onClick={() => setFilter(tag)}
-              className={cn(
-                "border-b pb-[6px] text-sm transition-colors focus-visible:outline-none focus-visible:text-[#D4AF37]",
-                active
-                  ? "border-[#D4AF37] text-[#EDE6D8]"
-                  : "border-transparent text-[#B5AD9F] hover:text-[#EDE6D8]"
-              )}
-            >
-              {tag ?? t("photography_filter_all")}
-            </button>
-          );
-        })}
-      </div>
-
+    <>
       <div
         ref={galleryRef}
         className={cn(
@@ -177,7 +135,7 @@ export function JustifiedGallery({ images }: { images: PhotographyImage[] }) {
                 ))}
               </div>
             ))
-          : visible.map((image) => (
+          : images.map((image) => (
               <JustifiedTile
                 key={image.id}
                 image={image}
@@ -187,15 +145,14 @@ export function JustifiedGallery({ images }: { images: PhotographyImage[] }) {
             ))}
       </div>
 
-      {/* Scoped to the current filter */}
       <ImageLightbox
-        images={visible}
+        images={images}
         initialIndex={lightboxIndex}
         open={lightboxOpen}
         onOpenChange={setLightboxOpen}
         returnFocusRef={openerRef}
       />
-    </div>
+    </>
   );
 }
 
