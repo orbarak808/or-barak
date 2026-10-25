@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,10 +21,18 @@ const Navbar = () => {
   const prefersReducedMotion = usePrefersReducedMotion();
   // The hero's tagline "arrives" here once the hero has scrolled away
   const showTagline = heroVisibility === "out-of-view";
-  // Landing page: the bar is transparent over the hero and fades in a dark
-  // glass once the hero has scrolled away (or while the mobile menu is open)
+  // Landing page: the bar is transparent over the top of the hero and fades
+  // in a dark glass once the page has scrolled a little (or while the
+  // mobile menu is open), so hero text never slides under a bare bar
   const isLanding = pathname === "/";
-  const showGlass = heroVisibility === "out-of-view" || mobileMenuOpen.value;
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const update = () => setScrolled(window.scrollY > 80);
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, []);
+  const showGlass = scrolled || mobileMenuOpen.value;
 
   // Links target the landing page's sections, so they work from deep pages
   // too (/videography, /photography, ...) — Link navigates home and the

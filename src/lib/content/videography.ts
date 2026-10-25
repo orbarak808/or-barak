@@ -8,13 +8,15 @@ export const videographyVideos: VideoItem[] = [
     role: VideoRole.Directed_Filmed_Edited,
     title: "Magic",
     url: "https://youtu.be/djaIqqFDX6U",
-    featured: true
+    featured: true,
+    category: "Short Film"
   },
   {
     role: VideoRole.Directed_Filmed_Edited,
     title: "The Booklady",
     url: "https://youtu.be/vOPwA3h1hss",
-    featured: true
+    featured: true,
+    category: "Short Film"
   },
   {
     role: VideoRole.Directed_Filmed_Edited,
