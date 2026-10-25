@@ -4,7 +4,6 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { PhotographyImage } from "@/lib/types/photography";
-import { Typography } from "@/components/ui/typography";
 import { useScrollReveal } from "@/components/ui/scroll-reveal";
 
 interface ImageCardProps {

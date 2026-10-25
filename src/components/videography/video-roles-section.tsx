@@ -46,7 +46,7 @@ export function VideoRolesSection({ videos }: VideoRolesSectionProps) {
 
     // Filter out empty roles and return as array
     return Object.entries(grouped)
-      .filter(([_, videos]) => videos.length > 0)
+      .filter(([, videos]) => videos.length > 0)
       .map(([role, videos]) => ({
         role: role as VideoRole,
         videos

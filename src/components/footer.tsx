@@ -1,6 +1,5 @@
 import { Icon } from "@/components/ui/icon";
 import { Typography } from "@/components/ui/typography";
-import { useTranslations } from "next-intl";
 import { OR_CONSTANTS } from "@/lib/constants/or.constants";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";

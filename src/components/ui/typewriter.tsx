@@ -67,7 +67,8 @@ export const Typewriter: React.FC<TypewriterProps> = ({
   blinkCursor = false,
   startDelay = 0
 }) => {
-  const [displayed, setDisplayed] = useState("");
+  // How many characters have been typed so far
+  const [typed, setTyped] = useState(0);
   const [shouldStart, setShouldStart] = useState(false);
   const text = extractText(children);
 
@@ -97,19 +98,17 @@ export const Typewriter: React.FC<TypewriterProps> = ({
 
   useEffect(() => {
     if (!shouldStart) return;
-    setDisplayed("");
     const interval = setInterval(() => {
-      setDisplayed((prev) => {
-        if (prev.length < text.length) {
-          return prev + text[prev.length];
-        } else {
-          clearInterval(interval);
-          return prev;
-        }
+      setTyped((count) => {
+        if (count < text.length) return count + 1;
+        clearInterval(interval);
+        return count;
       });
     }, speed);
     return () => clearInterval(interval);
   }, [shouldStart, text, speed]);
+
+  const displayed = text.slice(0, typed);
 
   return (
     <div ref={ref} className={cn("inline-block", className)}>
