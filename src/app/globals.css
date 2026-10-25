@@ -356,7 +356,7 @@
    folds, fading toward the screen (inner edge) and out at the top and
    bottom so they hang in the shared sky without a hard edge. The fold
    pattern drifts a few px back and forth, slowly, like fabric settling.
-   Hidden below lg. */
+   Hidden from 768 to 1023px; an 18px still sliver on phones. */
 .cinema-curtain {
   position: absolute;
   top: 0;
@@ -403,6 +403,15 @@
 @media (min-width: 1024px) {
   .cinema-curtain {
     display: block;
+  }
+}
+
+/* Phones: a thin sliver of the same curtain at each edge, still */
+@media (max-width: 767px) {
+  .cinema-curtain {
+    display: block;
+    width: 18px;
+    animation: none;
   }
 }
 
