@@ -108,6 +108,16 @@ export function FilmStrips() {
       aria-hidden='true'
       className='film-strips'
       data-paused={onScreen ? undefined : ""}
+      // Containment inline as well as in globals.css: if the stylesheet is
+      // ever missing or stale, the strips stay clipped behind the content
+      // instead of spilling full-size frames into the page
+      style={{
+        position: "absolute",
+        inset: 0,
+        zIndex: -1,
+        overflow: "hidden",
+        pointerEvents: "none"
+      }}
     >
       <Strip side='left' photos={filmStripPhotos} firstFrame={14} />
       <Strip side='right' photos={rightPhotos} firstFrame={31} />

@@ -84,7 +84,7 @@ const Contact = ({ className }: ContactProps) => {
   return (
     <section
       className={cn(
-        "contact-atmosphere isolate bg-black dark:bg-black py-10 sm:py-12 md:py-16 px-4 sm:px-6 overflow-x-hidden max-w-full",
+        "contact-atmosphere isolate bg-black dark:bg-black py-10 sm:py-12 md:py-16 px-4 sm:px-6 max-w-full",
         className
       )}
     >
