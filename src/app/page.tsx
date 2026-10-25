@@ -3,6 +3,7 @@ import Contact from "@/components/contact";
 import Footer from "@/components/footer";
 import { HeroSection } from "@/components/home";
 import { FeaturedFilms } from "@/components/home/featured-films";
+import { ViewMoreButton } from "@/components/home/view-more-button";
 import {
   SectionHeading,
   headingEm,
@@ -11,8 +12,12 @@ import {
 import { ImageGallery } from "@/components/photography/image-gallery";
 import { Container } from "@/components/ui/container";
 import { Reveal, ScrollRevealProvider } from "@/components/ui/scroll-reveal";
-import { featuredPhotos } from "@/lib/content/photography";
-import { featuredVideos } from "@/lib/content/videography";
+import {
+  featuredPhotos,
+  getAllPhotographyImages
+} from "@/lib/content/photography";
+import { featuredVideos, videographyVideos } from "@/lib/content/videography";
+import { VideoRole } from "@/lib/enums/video-role.enum";
 import { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
@@ -42,6 +47,13 @@ export async function generateMetadata(): Promise<Metadata> {
     }
   };
 }
+
+// "All films" are the ones Or directed, filmed and edited; producer and crew
+// work is listed under Selected Credits
+const filmCount = videographyVideos.filter(
+  (video) => video.role === VideoRole.Directed_Filmed_Edited
+).length;
+const photoCount = getAllPhotographyImages().length;
 
 export default async function Home() {
   const t = await getTranslations();
@@ -82,19 +94,6 @@ export default async function Home() {
                 <SectionHeading
                   eyebrow={t("videography_subtitle")}
                   title={t.rich("home_films_heading", { em: headingEm })}
-                  aside={
-                    <>
-                      <Link href='/videography' className={textLinkClasses}>
-                        {t("home_videography_view_all")}
-                      </Link>
-                      <Link
-                        href='/videography#credits'
-                        className={textLinkClasses}
-                      >
-                        {t("home_videography_credits")}
-                      </Link>
-                    </>
-                  }
                 />
                 <Reveal>
                   <p className='max-w-2xl text-base leading-[1.65] text-[#B5AD9F]'>
@@ -104,6 +103,18 @@ export default async function Home() {
               </div>
               <FeaturedFilms videos={featuredVideos} />
             </div>
+            {/* The way deeper: one clear primary action, credits beside it */}
+            <Reveal className='mt-12 flex flex-col items-stretch gap-5 sm:flex-row sm:items-center sm:justify-center sm:gap-8'>
+              <ViewMoreButton href='/videography'>
+                {t("home_videography_view_all")} ({filmCount})
+              </ViewMoreButton>
+              <Link
+                href='/videography#credits'
+                className={`${textLinkClasses} self-center`}
+              >
+                {t("home_videography_credits")}
+              </Link>
+            </Reveal>
           </Container>
         </section>
 
@@ -118,14 +129,14 @@ export default async function Home() {
               <SectionHeading
                 eyebrow={t("photography_title")}
                 title={t("home_photography_title")}
-                aside={
-                  <Link href='/photography' className={textLinkClasses}>
-                    {t("home_photography_view_all")}
-                  </Link>
-                }
               />
               <ImageGallery images={featuredPhotos} columns={3} />
             </div>
+            <Reveal className='mt-12 flex justify-center'>
+              <ViewMoreButton href='/photography'>
+                {t("home_photography_view_all")} ({photoCount})
+              </ViewMoreButton>
+            </Reveal>
           </Container>
         </section>
 
