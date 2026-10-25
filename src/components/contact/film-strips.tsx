@@ -128,3 +128,69 @@ export function FilmStrips() {
     </div>
   );
 }
+
+// Frames per copy of the horizontal strip; a copy must be wider than the
+// widest screen it shows on (it is hidden from 1024px up)
+const H_FRAMES_PER_COPY = 12;
+
+function HorizontalCopy({ firstFrame }: { firstFrame: number }) {
+  return (
+    <div className='film-strip-h-copy'>
+      {Array.from({ length: H_FRAMES_PER_COPY }, (_, i) => {
+        const photo = filmStripPhotos[i % filmStripPhotos.length];
+        const number = firstFrame + i;
+        return (
+          <div key={i} className='film-strip-h-frame'>
+            <span className='film-strip-h-edge'>
+              {i % 4 === 0 ? `OB 26 ▸ ${number}` : number}
+            </span>
+            <Image
+              src={frameSrc(photo)}
+              alt=''
+              width={94}
+              height={62}
+              sizes='94px'
+              className='film-strip-image film-strip-h-image'
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/**
+ * Below lg the side strips are hidden; one horizontal strip of the same
+ * stock runs full width across the top of the contact section instead,
+ * drifting slowly left and fading out at both ends.
+ */
+export function FilmStripHorizontal({ className }: { className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [onScreen, setOnScreen] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) =>
+      setOnScreen(entry.isIntersecting)
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      aria-hidden='true'
+      className={`film-strip-h ${className ?? ""}`}
+      data-paused={onScreen ? undefined : ""}
+      // Contained inline too, so a stale stylesheet can't spill the frames
+      style={{ overflow: "hidden", pointerEvents: "none" }}
+    >
+      <div className='film-strip-h-track'>
+        <HorizontalCopy firstFrame={14} />
+        <HorizontalCopy firstFrame={14 + H_FRAMES_PER_COPY} />
+      </div>
+    </div>
+  );
+}

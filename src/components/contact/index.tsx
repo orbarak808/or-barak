@@ -24,7 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { socialLinks } from "@/lib/content/about";
 import { Reveal } from "@/components/ui/scroll-reveal";
 import { SectionHeading } from "@/components/home/section-heading";
-import { FilmStrips } from "./film-strips";
+import { FilmStrips, FilmStripHorizontal } from "./film-strips";
 
 const contactSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
@@ -89,6 +89,8 @@ const Contact = ({ className }: ContactProps) => {
       )}
     >
       <FilmStrips />
+      {/* Below lg: one strip across the top, full bleed */}
+      <FilmStripHorizontal className='-mx-4 mb-10 sm:-mx-6' />
       <div className='container mx-auto max-w-lg w-full'>
         <div className='mb-10 space-y-5 text-center'>
           <SectionHeading

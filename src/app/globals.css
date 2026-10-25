@@ -825,6 +825,108 @@
   animation-delay: -5s;
 }
 
+/* Below lg: one horizontal strip across the top of the contact section,
+   the same stock turned sideways (perforations along the top and bottom,
+   edge print along the top), drifting left one frame every 4s and fading
+   out at both ends. */
+.film-strip-h {
+  position: relative;
+  height: 90px;
+  opacity: 0.6;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 14%,
+    #000 86%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 14%,
+    #000 86%,
+    transparent
+  );
+}
+
+@media (min-width: 1024px) {
+  .film-strip-h {
+    display: none;
+  }
+}
+
+.film-strip-h-track {
+  display: flex;
+  width: max-content;
+  animation: film-strip-drift-x 48s linear infinite;
+}
+
+.film-strip-h-copy {
+  display: flex;
+  height: 90px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='7'%3E%3Crect x='9.3' y='0.4' width='5.4' height='6.2' rx='1.6' fill='%23070504' stroke='%23E8B878' stroke-opacity='0.18' stroke-width='0.8'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='7'%3E%3Crect x='9.3' y='0.4' width='5.4' height='6.2' rx='1.6' fill='%23070504' stroke='%23E8B878' stroke-opacity='0.18' stroke-width='0.8'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 220, 170, 0.035) 0px,
+      rgba(0, 0, 0, 0.08) 120px,
+      rgba(255, 220, 170, 0.02) 200px,
+      rgba(255, 220, 170, 0.035) 320px
+    ),
+    linear-gradient(
+      180deg,
+      #2a1d12,
+      #3a2716 30%,
+      #36241a 70%,
+      #2a1d12
+    );
+  background-size: 24px 7px, 24px 7px, auto, auto;
+  background-repeat: repeat-x, repeat-x, repeat, no-repeat;
+  background-position: 0 8px, left 0 bottom 2.5px, 0 0, 0 0;
+}
+
+.film-strip-h-frame {
+  position: relative;
+  width: 96px;
+  flex-shrink: 0;
+}
+
+/* 1px of base either side of each image leaves a thin frame line */
+.film-strip-image.film-strip-h-image {
+  top: 16px;
+  bottom: 12px;
+  left: 1px;
+  right: 1px;
+  width: 94px;
+  height: 62px;
+}
+
+.film-strip-h-edge {
+  position: absolute;
+  top: 1px;
+  left: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 5.5px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  color: #e8b878;
+  opacity: 0.45;
+}
+
+.film-strip-h[data-paused] .film-strip-h-track {
+  animation-play-state: paused;
+}
+
+@keyframes film-strip-drift-x {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
 /* Off screen: everything holds still */
 .film-strips[data-paused] *,
 .film-strips[data-paused] *::before,
@@ -961,6 +1063,7 @@
   }
 
   /* Film strips: static, no drift, weave or flicker */
+  .film-strip-h-track,
   .film-strips *,
   .film-strips *::before,
   .film-strips *::after {
