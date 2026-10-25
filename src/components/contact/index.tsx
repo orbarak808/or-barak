@@ -85,6 +85,7 @@ const Contact = ({ className }: ContactProps) => {
         className
       )}
     >
+      <div aria-hidden='true' className='contact-fx' />
       <div aria-hidden='true' className='contact-reels' />
       <div className='container mx-auto max-w-lg w-full'>
         <div className='text-center space-y-2.5 sm:space-y-3 mb-8 sm:mb-10'>

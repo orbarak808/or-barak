@@ -352,6 +352,25 @@
   filter: grayscale(1) brightness(0.85);
 }
 
+/* Frame around the collage and its light: the light drifts past the panel's
+   edges and would be cut off in a hard line where the hero ends, so it fades
+   out over the bottom ~15% (and, stacked under the portrait, over the top
+   4rem, meeting the portrait's own fade) */
+.hero-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 4rem, #000 85%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 4rem, #000 85%, transparent);
+}
+
+@media (min-width: 768px) {
+  .hero-glow {
+    -webkit-mask-image: linear-gradient(to bottom, #000 85%, transparent);
+    mask-image: linear-gradient(to bottom, #000 85%, transparent);
+  }
+}
+
 /* Portrait dissolves into the shared sky instead of ending on a hard edge:
    a short fade into the text panel when stacked, the bottom ~15% beside it */
 .hero-portrait {
@@ -497,6 +516,20 @@
   inset: 0;
   overflow: hidden;
   pointer-events: none;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 15%,
+    #000 85%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 15%,
+    #000 85%,
+    transparent
+  );
 }
 
 /* Projector beam: tungsten-warm cone with its apex above the top edge,
@@ -594,8 +627,8 @@
 /* Screening-room curtains on the section's side edges: draped fabric
    suggested purely with layered gradients — deep shadow valleys, warm
    wine-black faces, and gold sheen catching the fold edges. The whole
-   drape fades into the section at its inner edge and softens at top and
-   bottom. Right side mirrors the left. Hidden below md. */
+   drape fades into the section at its inner edge and over the top and
+   bottom ~15%. Right side mirrors the left. Hidden below md. */
 .cinema-curtain {
   position: absolute;
   top: 0;
@@ -606,15 +639,15 @@
   -webkit-mask-image: linear-gradient(
     to bottom,
     transparent,
-    #000 3rem,
-    #000 calc(100% - 3rem),
+    #000 15%,
+    #000 85%,
     transparent
   );
   mask-image: linear-gradient(
     to bottom,
     transparent,
-    #000 3rem,
-    #000 calc(100% - 3rem),
+    #000 15%,
+    #000 85%,
     transparent
   );
 }
@@ -749,9 +782,25 @@
     left bottom, right bottom, right bottom;
 }
 
-/* Rule-of-thirds grid inside the bracket frame */
+/* Rule-of-thirds grid inside the bracket frame. Its lines run the frame's
+   full height, so they fade out over the top and bottom ~15%; the brackets
+   stay crisp (they are marks inset from the edge, not lines ending at it). */
 .camera-viewfinder::after {
   display: none;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 15%,
+    #000 85%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 15%,
+    #000 85%,
+    transparent
+  );
   background-image: linear-gradient(var(--vf-grid), var(--vf-grid)),
     linear-gradient(var(--vf-grid), var(--vf-grid)),
     linear-gradient(var(--vf-grid), var(--vf-grid)),
@@ -778,23 +827,33 @@
       steps), eased behind the content column by a radial mask.
    3. A soft warm light drifting slowly across the section.
    No horizontal lines cross the content area. Everything sits at z-index -1
-   inside the section's stacking context (isolate), behind all content. */
+   inside the section's stacking context (isolate), behind all content.
+   Grain and light live on .contact-fx rather than the section itself so
+   that, on the landing page, they can fade out at the section's top and
+   bottom without fading the content. */
 .contact-atmosphere {
   position: relative;
   overflow: hidden;
 }
 
-.contact-atmosphere::before,
-.contact-atmosphere::after {
+.contact-fx {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.contact-fx::before,
+.contact-fx::after {
   content: "";
   position: absolute;
-  z-index: -1;
   pointer-events: none;
 }
 
 /* Grain: oversized so the step-jitter never exposes an edge; the mask keeps
    it quiet directly behind the heading and form */
-.contact-atmosphere::before {
+.contact-fx::before {
   inset: -6rem;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 240px 240px;
@@ -815,7 +874,7 @@
 }
 
 /* Drifting projection light */
-.contact-atmosphere::after {
+.contact-fx::after {
   inset: 0;
   background-image: radial-gradient(
     closest-side,
@@ -920,6 +979,27 @@
   }
 }
 
+/* On the landing page the contact effects sit on the shared sky: fade them
+   out over the section's top and bottom ~15% like the other overlays. The
+   standalone contact page keeps its black fill and shorter fades. */
+[data-sky] .contact-fx,
+[data-sky] .contact-reels {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 15%,
+    #000 85%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 15%,
+    #000 85%,
+    transparent
+  );
+}
+
 @media (prefers-reduced-motion: reduce) {
   .atmosphere-breath {
     animation: none;
@@ -953,11 +1033,11 @@
     animation: none;
   }
 
-  .contact-atmosphere::before {
+  .contact-fx::before {
     animation: none;
   }
 
-  .contact-atmosphere::after {
+  .contact-fx::after {
     animation: none;
     opacity: 0.45;
   }

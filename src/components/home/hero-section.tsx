@@ -77,27 +77,29 @@ export function HeroSection({
             top: the page's shared sky, light-masked photo collage, the light
             itself. */}
         <div className='relative isolate order-2 flex w-full items-center px-6 pt-10 pb-32 sm:px-10 md:order-1 md:w-[45%] md:px-12 md:py-0 lg:px-16'>
-          <div aria-hidden className='hero-reveal'>
-            <div className='grid h-full w-full grid-cols-2 grid-rows-2'>
-              {revealImages.map((src) => (
-                <div key={src} className='relative overflow-hidden'>
-                  <Image
-                    src={src}
-                    alt=''
-                    fill
-                    // Cells are ~quarter-panel but portrait-shaped, so cover
-                    // scales the landscape shots to ~2x the cell width;
-                    // size for that or they upscale soft.
-                    sizes='(min-width: 768px) 50vw, 100vw'
-                    className='object-cover'
-                    // Always in the first screen; lazy left the lower row unloaded
-                    loading='eager'
-                  />
-                </div>
-              ))}
+          <div aria-hidden className='hero-glow'>
+            <div className='hero-reveal'>
+              <div className='grid h-full w-full grid-cols-2 grid-rows-2'>
+                {revealImages.map((src) => (
+                  <div key={src} className='relative overflow-hidden'>
+                    <Image
+                      src={src}
+                      alt=''
+                      fill
+                      // Cells are ~quarter-panel but portrait-shaped, so cover
+                      // scales the landscape shots to ~2x the cell width;
+                      // size for that or they upscale soft.
+                      sizes='(min-width: 768px) 50vw, 100vw'
+                      className='object-cover'
+                      // Always in the first screen; lazy left the lower row unloaded
+                      loading='eager'
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
+            <div className='hero-light' />
           </div>
-          <div aria-hidden className='hero-light' />
 
           <div className='relative max-w-xl'>
             <motion.div
