@@ -228,6 +228,52 @@
   }
 }
 
+/* Landing page shared sky (src/components/atmosphere-sky.tsx). Sticky
+   inside the page wrapper and pulled out of flow with the negative margin,
+   so it stays behind the viewport while the sections scroll over it. The
+   wrapper isolates, so z-index -1 keeps it under every section without the
+   sections needing positions of their own. The engine writes the
+   background; .atmosphere-breath is a slow composited drift tinted with the
+   current g1 colour. */
+.atmosphere-sky {
+  position: sticky;
+  top: 0;
+  z-index: -1;
+  height: 100vh;
+  margin-bottom: -100vh;
+  pointer-events: none;
+  contain: strict;
+  isolation: isolate;
+}
+
+.atmosphere-breath {
+  position: absolute;
+  inset: -10%;
+  background: radial-gradient(
+    40% 32% at 50% 50%,
+    rgba(var(--bc, 232, 150, 79), 0.05),
+    rgba(var(--bc, 232, 150, 79), 0.025) 40%,
+    transparent 72%
+  );
+  animation: atmosphere-breathe 18s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+@keyframes atmosphere-breathe {
+  0% {
+    opacity: 0.55;
+    transform: translate3d(-3%, 1.5%, 0) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translate3d(1%, -1%, 0) scale(1.06);
+  }
+  100% {
+    opacity: 0.7;
+    transform: translate3d(3%, 1%, 0) scale(1.02);
+  }
+}
+
 /* Hero text panel: a drifting light that reveals photography beneath it.
    The glow (.hero-light) and the image mask (.hero-reveal) run the same
    keyframes — identical position/size values — so the reveal tracks the
@@ -861,6 +907,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .atmosphere-breath {
+    animation: none;
+  }
+
   /* Hero: light frozen mid-panel, reveal left at a faint static level */
   .hero-light::before,
   .hero-light::after,

@@ -1,3 +1,4 @@
+import { AtmosphereSky } from "@/components/atmosphere-sky";
 import Contact from "@/components/contact";
 import { HeroSection } from "@/components/home";
 import { ImageGallery } from "@/components/photography/image-gallery";
@@ -41,8 +42,13 @@ export default async function Home() {
   const t = await getTranslations();
 
   return (
-    <div className='overflow-clip max-w-full'>
-      <section id='home' className='scroll-mt-14 sm:scroll-mt-16'>
+    <div className='relative isolate overflow-clip max-w-full'>
+      <AtmosphereSky />
+      <section
+        id='home'
+        data-sky='hero'
+        className='scroll-mt-14 sm:scroll-mt-16'
+      >
         <HeroSection
           subtitle={t("home_hero_subtitle")}
           subtitleDetail={t("home_hero_subtitle_detail")}
@@ -52,10 +58,14 @@ export default async function Home() {
 
       <section
         id='videography'
+        data-sky='films'
         className='relative isolate scroll-mt-14 sm:scroll-mt-16 bg-black'
       >
         <div aria-hidden='true' className='cinema-screening' />
-        <div aria-hidden='true' className='cinema-curtain cinema-curtain--left' />
+        <div
+          aria-hidden='true'
+          className='cinema-curtain cinema-curtain--left'
+        />
         <div
           aria-hidden='true'
           className='cinema-curtain cinema-curtain--right'
@@ -84,6 +94,7 @@ export default async function Home() {
 
       <section
         id='photography'
+        data-sky='photography'
         className='relative isolate scroll-mt-14 sm:scroll-mt-16 bg-gradient-to-br from-white via-zinc-50 to-zinc-100 dark:from-black dark:via-zinc-950 dark:to-zinc-900'
       >
         <div aria-hidden='true' className='camera-viewfinder' />
@@ -102,7 +113,11 @@ export default async function Home() {
         </Container>
       </section>
 
-      <section id='about' className='scroll-mt-14 sm:scroll-mt-16'>
+      <section
+        id='about'
+        data-sky='about'
+        className='scroll-mt-14 sm:scroll-mt-16'
+      >
         <Container size='narrow' className='py-8 sm:py-12 md:py-16 lg:py-20'>
           <div className='max-w-2xl mx-auto space-y-8 sm:space-y-12'>
             <ImageSectionTitle>{t("home_about_title")}</ImageSectionTitle>
@@ -141,7 +156,11 @@ export default async function Home() {
         </Container>
       </section>
 
-      <section id='contact' className='scroll-mt-14 sm:scroll-mt-16'>
+      <section
+        id='contact'
+        data-sky='contact'
+        className='scroll-mt-14 sm:scroll-mt-16'
+      >
         <Contact />
       </section>
     </div>
