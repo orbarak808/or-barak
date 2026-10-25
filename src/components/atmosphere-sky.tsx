@@ -56,16 +56,22 @@ function toRgb(L: number[]) {
   );
 }
 
-// Flatten a stop to one numeric vector: 3 sky colours (9) + two lights (2 x 8)
-function vec(s: SkyStop) {
+// Flatten a stop to one numeric vector: 3 sky colours (9) + two lights (2 x 8).
+// alphaScale multiplies both lights' alphas (phones get a brighter sky).
+function vec(s: SkyStop, alphaScale = 1) {
   const v: number[] = [];
   s.sky.forEach((h) => v.push(...toLab(h)));
   [s.g1, s.g2].forEach((g) => {
     v.push(...toLab(g[0]));
-    v.push(g[1], g[2], g[3], g[4], g[5]);
+    v.push(g[1] * alphaScale, g[2], g[3], g[4], g[5]);
   });
   return v;
 }
+
+// Below 768px the warm lights are ~40% stronger, so the atmosphere still
+// reads on a small, bright screen
+const PHONE_QUERY = "(max-width: 767px)";
+const PHONE_ALPHA_SCALE = 1.4;
 
 // Eased falloff: many stops along a smooth curve, so a glow has no visible
 // edge or banding
@@ -127,13 +133,19 @@ export function AtmosphereSky({ stops = skyStops }: { stops?: SkyStop[] }) {
     if (!atmo || !root) return;
     const breath = breathRef.current;
 
+    const phoneQuery = window.matchMedia(PHONE_QUERY);
+    const alphaScale = () => (phoneQuery.matches ? PHONE_ALPHA_SCALE : 1);
+
     // Sections are found by their data-sky id, in config order
     const S = stops
       .map((s) => ({
+        stop: s,
         node: root.querySelector<HTMLElement>(`[data-sky="${s.id}"]`),
-        v: vec(s)
+        v: vec(s, alphaScale())
       }))
-      .filter((s): s is { node: HTMLElement; v: number[] } => !!s.node);
+      .filter(
+        (s): s is { stop: SkyStop; node: HTMLElement; v: number[] } => !!s.node
+      );
     if (S.length < 2) return;
 
     const N = S[0].v.length;
@@ -231,6 +243,13 @@ export function AtmosphereSky({ stops = skyStops }: { stops?: SkyStop[] }) {
       if (!raf) raf = requestAnimationFrame(frame);
     }
 
+    // Crossing 768px re-weights the lights; the sky glides to the new target
+    function onPhoneChange() {
+      const scale = alphaScale();
+      S.forEach((s) => (s.v = vec(s.stop, scale)));
+      kick();
+    }
+
     function onMotionChange() {
       reduced = motionQuery.matches;
       if (reduced) {
@@ -244,6 +263,7 @@ export function AtmosphereSky({ stops = skyStops }: { stops?: SkyStop[] }) {
     addEventListener("scroll", kick, { passive: true });
     addEventListener("resize", kick);
     motionQuery.addEventListener("change", onMotionChange);
+    phoneQuery.addEventListener("change", onPhoneChange);
     const ro = new ResizeObserver(kick);
     S.forEach((s) => ro.observe(s.node));
 
@@ -254,6 +274,7 @@ export function AtmosphereSky({ stops = skyStops }: { stops?: SkyStop[] }) {
       removeEventListener("scroll", kick);
       removeEventListener("resize", kick);
       motionQuery.removeEventListener("change", onMotionChange);
+      phoneQuery.removeEventListener("change", onPhoneChange);
       ro.disconnect();
       cancelAnimationFrame(raf);
     };
