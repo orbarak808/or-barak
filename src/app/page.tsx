@@ -44,7 +44,12 @@ export default async function Home() {
   const t = await getTranslations();
 
   return (
-    <div data-sky-root className='relative isolate overflow-clip max-w-full'>
+    // Pulled up under the fixed navbar: the hero is full-bleed from the top
+    // of the window and the navbar sits transparent over it
+    <div
+      data-sky-root
+      className='relative isolate -mt-14 sm:-mt-16 overflow-clip max-w-full'
+    >
       <AtmosphereSky />
       <ScrollRevealProvider>
         <section
@@ -52,11 +57,7 @@ export default async function Home() {
           data-sky='hero'
           className='scroll-mt-14 sm:scroll-mt-16'
         >
-          <HeroSection
-            subtitle={t("home_hero_subtitle")}
-            subtitleDetail={t("home_hero_subtitle_detail")}
-            description={t("home_hero_description")}
-          />
+          <HeroSection />
         </section>
 
         <section

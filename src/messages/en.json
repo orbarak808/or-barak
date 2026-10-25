@@ -35,7 +35,9 @@
   "home_hero_name": "Or Barak",
   "home_hero_subtitle": "Filmmaker & Producer",
   "home_hero_subtitle_detail": "Project management · Systems development",
-  "home_hero_description": "My passion is storytelling, and my goal is to create work that inspires. To get there, I work end to end, from concept and writing through production, cinematography, and the final edit.",
+  "home_hero_headline": "My passion is <em>storytelling.</em>",
+  "home_hero_goal": "My goal is to create work that inspires.",
+  "home_hero_description": "I work end to end, from concept and writing through production, cinematography, and the final edit.",
 
   "home_videos_title": "Latest Work",
   "home_videos_description": "",
