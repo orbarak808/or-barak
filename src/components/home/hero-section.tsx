@@ -58,11 +58,11 @@ export function HeroSection({
   return (
     <section
       ref={sectionRef}
-      className='relative w-full overflow-hidden bg-black md:h-[calc(100svh-4rem)]'
+      className='relative w-full overflow-hidden md:h-[calc(100svh-4rem)]'
     >
       <div className='flex h-full flex-col md:flex-row'>
         {/* Portrait — top on mobile, right column on desktop */}
-        <div className='relative order-1 h-[50svh] w-full md:order-2 md:h-full md:w-[55%]'>
+        <div className='hero-portrait relative order-1 h-[50svh] w-full md:order-2 md:h-full md:w-[55%]'>
           <Image
             src={heroPhoto}
             alt='Portrait of Or Barak'
@@ -71,13 +71,12 @@ export function HeroSection({
             sizes='(min-width: 768px) 55vw, 100vw'
             className='object-cover object-[52%_35%]'
           />
-          {/* Fade into the dark text panel below (mobile only) */}
-          <div className='pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-black md:hidden' />
         </div>
 
         {/* Text — below on mobile, left column on desktop. Layers bottom to
-            top: black panel, light-masked photo collage, the light itself. */}
-        <div className='relative isolate order-2 flex w-full items-center bg-black px-6 pt-10 pb-32 sm:px-10 md:order-1 md:w-[45%] md:px-12 md:py-0 lg:px-16'>
+            top: the page's shared sky, light-masked photo collage, the light
+            itself. */}
+        <div className='relative isolate order-2 flex w-full items-center px-6 pt-10 pb-32 sm:px-10 md:order-1 md:w-[45%] md:px-12 md:py-0 lg:px-16'>
           <div aria-hidden className='hero-reveal'>
             <div className='grid h-full w-full grid-cols-2 grid-rows-2'>
               {revealImages.map((src) => (
@@ -99,8 +98,6 @@ export function HeroSection({
             </div>
           </div>
           <div aria-hidden className='hero-light' />
-          {/* Stacked: fade the light's clipped top edge into the portrait's fade */}
-          <div aria-hidden className='pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black to-transparent md:hidden' />
 
           <div className='relative max-w-xl'>
             <motion.div

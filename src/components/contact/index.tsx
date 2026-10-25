@@ -37,7 +37,12 @@ const fieldClasses =
 const labelClasses =
   "text-zinc-500 dark:text-zinc-500 uppercase tracking-wider text-xs font-sans mb-2 block";
 
-const Contact = () => {
+type ContactProps = {
+  /** Merged onto the section; the landing page clears its fill */
+  className?: string;
+};
+
+const Contact = ({ className }: ContactProps) => {
   const t = useTranslations();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -74,7 +79,12 @@ const Contact = () => {
   };
 
   return (
-    <section className='contact-atmosphere isolate bg-black dark:bg-black py-10 sm:py-12 md:py-16 px-4 sm:px-6 overflow-x-hidden max-w-full'>
+    <section
+      className={cn(
+        "contact-atmosphere isolate bg-black dark:bg-black py-10 sm:py-12 md:py-16 px-4 sm:px-6 overflow-x-hidden max-w-full",
+        className
+      )}
+    >
       <div aria-hidden='true' className='contact-reels' />
       <div className='container mx-auto max-w-lg w-full'>
         <div className='text-center space-y-2.5 sm:space-y-3 mb-8 sm:mb-10'>

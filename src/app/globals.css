@@ -317,13 +317,13 @@
   animation: hero-grain-shift 9s steps(10) infinite;
 }
 
-/* Photography collage, visible only where the light falls. luminosity blend
-   over the black panel keeps only the images' tonal values, so they sit in
-   the dark as monochrome rather than on top of it. The mask is the glow's
+/* Photography collage, visible only where the light falls. The images are
+   reduced to their tonal values (grayscale), so they sit in the dark as
+   monochrome rather than on top of it. A filter rather than a luminosity
+   blend: the panel no longer has a black fill of its own to blend against. The mask is the glow's
    gradient shape at higher alphas: clearly readable in the light's core,
    gone well before the gradient's edge. */
 .hero-reveal {
-  mix-blend-mode: luminosity;
   -webkit-mask-image: radial-gradient(
     closest-side,
     rgba(0, 0, 0, 0.8) 0%,
@@ -349,7 +349,21 @@
 }
 
 .hero-reveal img {
-  filter: brightness(0.85);
+  filter: grayscale(1) brightness(0.85);
+}
+
+/* Portrait dissolves into the shared sky instead of ending on a hard edge:
+   a short fade into the text panel when stacked, the bottom ~15% beside it */
+.hero-portrait {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 6rem), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 6rem), transparent);
+}
+
+@media (min-width: 768px) {
+  .hero-portrait {
+    -webkit-mask-image: linear-gradient(to bottom, #000 85%, transparent);
+    mask-image: linear-gradient(to bottom, #000 85%, transparent);
+  }
 }
 
 @keyframes hero-light-drift {

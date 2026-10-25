@@ -1,5 +1,6 @@
 import { AtmosphereSky } from "@/components/atmosphere-sky";
 import Contact from "@/components/contact";
+import Footer from "@/components/footer";
 import { HeroSection } from "@/components/home";
 import { ImageGallery } from "@/components/photography/image-gallery";
 import ImageSectionTitle from "@/components/photography/image-section-title";
@@ -59,7 +60,7 @@ export default async function Home() {
       <section
         id='videography'
         data-sky='films'
-        className='relative isolate scroll-mt-14 sm:scroll-mt-16 bg-black'
+        className='relative isolate scroll-mt-14 sm:scroll-mt-16'
       >
         <div aria-hidden='true' className='cinema-screening' />
         <div
@@ -95,7 +96,7 @@ export default async function Home() {
       <section
         id='photography'
         data-sky='photography'
-        className='relative isolate scroll-mt-14 sm:scroll-mt-16 bg-gradient-to-br from-white via-zinc-50 to-zinc-100 dark:from-black dark:via-zinc-950 dark:to-zinc-900'
+        className='relative isolate scroll-mt-14 sm:scroll-mt-16'
       >
         <div aria-hidden='true' className='camera-viewfinder' />
         <Container className='py-8 sm:py-12 md:py-16 lg:py-20'>
@@ -161,8 +162,12 @@ export default async function Home() {
         data-sky='contact'
         className='scroll-mt-14 sm:scroll-mt-16'
       >
-        <Contact />
+        <Contact className='bg-transparent dark:bg-transparent' />
       </section>
+
+      {/* The landing page's footer lives inside the sky (the root layout
+          skips it here); it ends on the contact stop */}
+      <Footer className='border-t-0 bg-transparent dark:bg-transparent' />
     </div>
   );
 }

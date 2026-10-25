@@ -5,6 +5,7 @@ import { OR_CONSTANTS } from "@/lib/constants/or.constants";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { getEmailLink } from "@/lib/utils/links.utils";
+import { cn } from "@/lib/utils";
 
 const socialLinks = [
   {
@@ -29,12 +30,25 @@ const socialLinks = [
   }
 ];
 
-const Footer = async () => {
+type FooterProps = {
+  /** Merged onto the footer; the landing page clears its fill and border */
+  className?: string;
+};
+
+const Footer = async ({ className }: FooterProps) => {
   const t = await getTranslations();
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className='border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black overflow-x-hidden max-w-full'>
+    // Explicit role: on the landing page the footer sits inside <main>,
+    // where a plain <footer> loses its contentinfo landmark
+    <footer
+      role='contentinfo'
+      className={cn(
+        "border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black overflow-x-hidden max-w-full",
+        className
+      )}
+    >
       <div className='mx-auto max-w-7xl px-4 py-8 sm:py-10 md:py-12 sm:px-6 lg:px-8 w-full'>
         <div className='flex flex-col items-center gap-6 sm:gap-8'>
           <div className='flex items-center gap-5 sm:gap-6'>

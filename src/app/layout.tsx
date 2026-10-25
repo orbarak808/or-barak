@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getLocale } from "next-intl/server";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
+import { OutsideLanding } from "@/components/outside-landing";
 import { HeroVisibilityProvider } from "@/components/hero-visibility";
 
 import "./globals.css";
@@ -39,7 +40,9 @@ export default async function RootLayout({
             <main className='min-h-screen pt-14 sm:pt-16 overflow-x-clip max-w-full'>
               {children}
             </main>
-            <Footer />
+            <OutsideLanding>
+              <Footer />
+            </OutsideLanding>
           </HeroVisibilityProvider>
         </NextIntlClientProvider>
         <Analytics />
