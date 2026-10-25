@@ -1005,6 +1005,13 @@
     animation: none;
   }
 
+  /* Scroll entrances: content is visible from the first paint, before
+     framer-motion hydrates (beats its inline opacity/transform) */
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
   /* Hero: light frozen mid-panel, reveal left at a faint static level */
   .hero-light::before,
   .hero-light::after,

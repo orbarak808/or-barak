@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { PhotographyImage } from "@/lib/types/photography";
 import { Typography } from "@/components/ui/typography";
+import { useScrollReveal } from "@/components/ui/scroll-reveal";
 
 interface ImageCardProps {
   image: PhotographyImage;
@@ -28,11 +29,17 @@ export function ImageCard({
   onClick,
   className
 }: ImageCardProps) {
+  // On the landing page the card rises in as it scrolls into view instead
+  // of on mount; a light stagger across each row
+  const reveal = useScrollReveal((index % 3) * 0.06);
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.05 }}
+      {...(reveal ?? {
+        initial: { opacity: 0, y: 20 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.5, delay: index * 0.05 }
+      })}
       className={cn(
         "group relative cursor-pointer overflow-hidden rounded-lg",
         className

@@ -22,6 +22,7 @@ import { createNewLead } from "@/lib/db/actions";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { socialLinks } from "@/lib/content/about";
+import { Reveal } from "@/components/ui/scroll-reveal";
 
 const contactSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
@@ -88,7 +89,7 @@ const Contact = ({ className }: ContactProps) => {
       <div aria-hidden='true' className='contact-fx' />
       <div aria-hidden='true' className='contact-reels' />
       <div className='container mx-auto max-w-lg w-full'>
-        <div className='text-center space-y-2.5 sm:space-y-3 mb-8 sm:mb-10'>
+        <Reveal className='text-center space-y-2.5 sm:space-y-3 mb-8 sm:mb-10'>
           <Typography
             variant='caption1'
             className='text-zinc-400 dark:text-zinc-500 uppercase tracking-wider text-xs sm:text-sm font-sans block'
@@ -107,109 +108,115 @@ const Contact = ({ className }: ContactProps) => {
           >
             {t("contact_intro")}
           </Typography>
-        </div>
+        </Reveal>
 
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className='space-y-4 sm:space-y-5'
-            noValidate
-          >
-            {isSubmitted && (
-              <div className='p-3 sm:p-4 rounded-lg bg-zinc-900 border border-zinc-800'>
-                <Typography
-                  variant='body2'
-                  className='text-zinc-300 dark:text-zinc-300 text-sm sm:text-base'
-                >
-                  {t("contact_form_success")}
-                </Typography>
-              </div>
-            )}
-
-            <FormField
-              control={form.control}
-              name='name'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className={labelClasses}>
-                    {t("contact_form_name_label")}
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} className={fieldClasses} placeholder='' />
-                  </FormControl>
-                  <FormMessage className='text-red-400 text-xs' />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name='email'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className={labelClasses}>
-                    {t("contact_form_email_label")}
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type='email'
-                      className={fieldClasses}
-                      placeholder=''
-                      autoComplete='email'
-                    />
-                  </FormControl>
-                  <FormMessage className='text-red-400 text-xs' />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name='description'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className={labelClasses}>
-                    {t("contact_form_message_label")}
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      value={field.value ?? ""}
-                      rows={4}
-                      className={cn(
-                        fieldClasses,
-                        "py-2 resize-none min-h-[80px] sm:min-h-[100px]"
-                      )}
-                      placeholder=''
-                    />
-                  </FormControl>
-                  <FormMessage className='text-red-400 text-xs' />
-                </FormItem>
-              )}
-            />
-
-            <Button
-              type='submit'
-              disabled={isLoading}
-              className={cn(
-                "w-full border-2 border-amber-500 dark:border-amber-400 bg-transparent hover:bg-amber-500/10 text-white font-sans uppercase tracking-wider text-sm sm:text-base py-5 sm:py-6 rounded-none transition-all min-h-[52px] touch-manipulation",
-                "hover:border-amber-400 dark:hover:border-amber-300 active:bg-amber-500/20"
-              )}
+        <Reveal>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className='space-y-4 sm:space-y-5'
+              noValidate
             >
-              {isLoading ? (
-                <span className='flex items-center gap-2'>
-                  <span className='animate-spin'>⟳</span>
-                  {t("contact_form_submit")}
-                </span>
-              ) : (
-                t("contact_form_submit")
+              {isSubmitted && (
+                <div className='p-3 sm:p-4 rounded-lg bg-zinc-900 border border-zinc-800'>
+                  <Typography
+                    variant='body2'
+                    className='text-zinc-300 dark:text-zinc-300 text-sm sm:text-base'
+                  >
+                    {t("contact_form_success")}
+                  </Typography>
+                </div>
               )}
-            </Button>
-          </form>
-        </Form>
 
-        <div className='flex flex-wrap justify-center gap-4 sm:gap-6 mt-8 sm:mt-10'>
+              <FormField
+                control={form.control}
+                name='name'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className={labelClasses}>
+                      {t("contact_form_name_label")}
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        className={fieldClasses}
+                        placeholder=''
+                      />
+                    </FormControl>
+                    <FormMessage className='text-red-400 text-xs' />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='email'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className={labelClasses}>
+                      {t("contact_form_email_label")}
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type='email'
+                        className={fieldClasses}
+                        placeholder=''
+                        autoComplete='email'
+                      />
+                    </FormControl>
+                    <FormMessage className='text-red-400 text-xs' />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name='description'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className={labelClasses}>
+                      {t("contact_form_message_label")}
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        value={field.value ?? ""}
+                        rows={4}
+                        className={cn(
+                          fieldClasses,
+                          "py-2 resize-none min-h-[80px] sm:min-h-[100px]"
+                        )}
+                        placeholder=''
+                      />
+                    </FormControl>
+                    <FormMessage className='text-red-400 text-xs' />
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                type='submit'
+                disabled={isLoading}
+                className={cn(
+                  "w-full border-2 border-amber-500 dark:border-amber-400 bg-transparent hover:bg-amber-500/10 text-white font-sans uppercase tracking-wider text-sm sm:text-base py-5 sm:py-6 rounded-none transition-all min-h-[52px] touch-manipulation",
+                  "hover:border-amber-400 dark:hover:border-amber-300 active:bg-amber-500/20"
+                )}
+              >
+                {isLoading ? (
+                  <span className='flex items-center gap-2'>
+                    <span className='animate-spin'>⟳</span>
+                    {t("contact_form_submit")}
+                  </span>
+                ) : (
+                  t("contact_form_submit")
+                )}
+              </Button>
+            </form>
+          </Form>
+        </Reveal>
+
+        <Reveal className='flex flex-wrap justify-center gap-4 sm:gap-6 mt-8 sm:mt-10'>
           {socialLinks.map((link) => (
             <Link
               key={link.name}
@@ -221,7 +228,7 @@ const Contact = ({ className }: ContactProps) => {
               {t(link.name)}
             </Link>
           ))}
-        </div>
+        </Reveal>
       </div>
     </section>
   );

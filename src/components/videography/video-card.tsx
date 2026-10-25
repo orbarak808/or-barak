@@ -13,6 +13,7 @@ import {
   isYouTubeUrl
 } from "@/lib/utils/youtube.utils";
 import { Icon } from "@/components/ui/icon";
+import { useScrollReveal } from "@/components/ui/scroll-reveal";
 
 interface VideoCardProps {
   video: VideoItem;
@@ -42,6 +43,9 @@ export function VideoCard({
     ? getYouTubeThumbnail(youtubeId, video.thumbnailVersion)
     : "";
   const [thumbnailSrc, setThumbnailSrc] = useState(thumbnail);
+  // On the landing page the card rises in as it scrolls into view instead
+  // of on mount; a light stagger across each row
+  const reveal = useScrollReveal((index % 4) * 0.06);
 
   // Extract year and type from title if available
   // Handle formats like "ABF 2025 (Short Documentary)" or "Title (Type)"
@@ -54,9 +58,11 @@ export function VideoCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.05 }}
+      {...(reveal ?? {
+        initial: { opacity: 0, y: 20 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.5, delay: index * 0.05 }
+      })}
       className={cn(
         // 16:9 matches YouTube thumbnails exactly, so object-cover never crops
         "group relative cursor-pointer overflow-hidden rounded-lg border border-zinc-800 bg-black transition-all duration-300 hover:border-zinc-600 hover:shadow-xl",

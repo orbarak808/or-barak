@@ -7,6 +7,7 @@ import { Typography } from "@/components/ui/typography";
 import { VideoCard } from "./video-card";
 import { VideoDialog } from "./video-dialog";
 import { useBoolean } from "@/hooks/use-boolean";
+import { Reveal } from "@/components/ui/scroll-reveal";
 
 interface VideoGridProps {
   videos: VideoItem[];
@@ -29,7 +30,7 @@ export function VideoGrid({ videos, title }: VideoGridProps) {
 
   return (
     <>
-      <div className='sm:items-start items-center space-y-4 text-center sm:text-left'>
+      <Reveal className='sm:items-start items-center space-y-4 text-center sm:text-left'>
         <Typography
           variant='h4'
           className='uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-medium'
@@ -43,7 +44,7 @@ export function VideoGrid({ videos, title }: VideoGridProps) {
         >
           {t("videography_description")}
         </Typography>
-      </div>
+      </Reveal>
       <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6'>
         {largeVideos.map((video, index) => (
           <VideoCard
