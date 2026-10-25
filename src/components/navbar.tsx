@@ -20,6 +20,10 @@ const Navbar = () => {
   const prefersReducedMotion = usePrefersReducedMotion();
   // The hero's tagline "arrives" here once the hero has scrolled away
   const showTagline = heroVisibility === "out-of-view";
+  // Landing page: the bar is transparent over the hero and fades in a dark
+  // glass once the hero has scrolled away (or while the mobile menu is open)
+  const isLanding = pathname === "/";
+  const showGlass = heroVisibility === "out-of-view" || mobileMenuOpen.value;
 
   // Links target the landing page's sections, so they work from deep pages
   // too (/videography, /photography, ...) — Link navigates home and the
@@ -45,7 +49,23 @@ const Navbar = () => {
   };
 
   return (
-    <nav className='fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-zinc-200 dark:bg-card/95 dark:border-border overflow-x-hidden max-w-full'>
+    <nav
+      className={cn(
+        "fixed top-0 left-0 right-0 z-50 overflow-x-hidden max-w-full",
+        !isLanding &&
+          "bg-white/95 backdrop-blur-md border-b border-zinc-200 dark:bg-card/95 dark:border-border"
+      )}
+    >
+      {isLanding && (
+        // Faded with opacity rather than transitioning the background itself
+        <div
+          aria-hidden
+          className={cn(
+            "absolute inset-0 -z-10 bg-[rgba(6,5,6,0.72)] backdrop-blur-[12px] transition-opacity duration-500",
+            showGlass ? "opacity-100" : "opacity-0"
+          )}
+        />
+      )}
       <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full'>
         <div className='relative flex h-14 sm:h-16 items-center justify-between md:justify-center'>
           {/* Logo / Name, with the hero tagline beside it once the hero has
@@ -55,7 +75,12 @@ const Navbar = () => {
             <Link href='/' className='flex items-center touch-manipulation'>
               <Typography
                 variant='h6'
-                className='font-serif text-zinc-900 dark:text-zinc-50 hover:text-amber-700 dark:hover:text-amber-600 transition-colors text-base sm:text-lg'
+                className={cn(
+                  "font-serif transition-colors",
+                  isLanding
+                    ? "text-[26px] sm:text-[26px] md:text-[26px] lg:text-[26px] leading-none text-[#EDE6D8] hover:text-[#D4AF37] dark:text-[#EDE6D8] dark:hover:text-[#D4AF37]"
+                    : "text-zinc-900 dark:text-zinc-50 hover:text-amber-700 dark:hover:text-amber-600 text-base sm:text-lg"
+                )}
               >
                 {t("home_hero_name")}
               </Typography>
@@ -86,7 +111,12 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className='hidden md:flex md:items-center md:gap-6'>
+          <div
+            className={cn(
+              "hidden md:flex md:items-center",
+              isLanding ? "md:gap-10" : "md:gap-6"
+            )}
+          >
             {navigation.map((item) => {
               const isActive = pathname === item.href;
               return (
@@ -99,10 +129,12 @@ const Navbar = () => {
                   <Typography
                     variant='body2'
                     className={cn(
-                      "text-base font-medium transition-colors",
-                      isActive
-                        ? "text-zinc-900 dark:text-zinc-50"
-                        : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50"
+                      "font-medium transition-colors",
+                      isLanding
+                        ? "text-sm sm:text-sm md:text-sm lg:text-sm text-[#EDE6D8] hover:text-[#D4AF37] dark:text-[#EDE6D8] dark:hover:text-[#D4AF37]"
+                        : isActive
+                          ? "text-base text-zinc-900 dark:text-zinc-50"
+                          : "text-base text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50"
                     )}
                   >
                     {item.name}
@@ -130,7 +162,12 @@ const Navbar = () => {
             {/* Mobile Menu Button */}
             <button
               type='button'
-              className='p-2.5 min-w-[44px] min-h-[44px] rounded-md text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50 transition-colors touch-manipulation active:bg-zinc-100 dark:active:bg-zinc-800'
+              className={cn(
+                "p-2.5 min-w-[44px] min-h-[44px] rounded-md transition-colors touch-manipulation active:bg-zinc-100 dark:active:bg-zinc-800",
+                isLanding
+                  ? "text-[#EDE6D8] hover:text-[#D4AF37]"
+                  : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+              )}
               onClick={mobileMenuOpen.onToggle}
               aria-label='Toggle menu'
             >
