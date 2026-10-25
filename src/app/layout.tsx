@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Instrument_Sans, Instrument_Serif } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { NextIntlClientProvider } from "next-intl";
@@ -6,6 +7,7 @@ import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { OutsideLanding } from "@/components/outside-landing";
 import { HeroVisibilityProvider } from "@/components/hero-visibility";
+import { SITE_URL, pageMetadata } from "@/lib/metadata";
 
 import "./globals.css";
 
@@ -26,6 +28,12 @@ const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
   display: "swap"
 });
+
+// Site-wide title, description and share card; absolute URLs (og:image)
+// resolve against the production domain
+export async function generateMetadata(): Promise<Metadata> {
+  return { metadataBase: new URL(SITE_URL), ...(await pageMetadata()) };
+}
 
 export default async function RootLayout({
   children

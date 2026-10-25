@@ -18,35 +18,8 @@ import {
 } from "@/lib/content/photography";
 import { featuredVideos, videographyVideos } from "@/lib/content/videography";
 import { VideoRole } from "@/lib/enums/video-role.enum";
-import { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations();
-
-  return {
-    title: t("site_title"),
-    description: t("site_description"),
-    openGraph: {
-      title: t("site_title"),
-      description: t("site_description"),
-      type: "website",
-      images: [
-        {
-          url: "/images/or-2.jpg",
-          alt: t("site_title")
-        }
-      ]
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${t("about_title")} | ${t("site_title")}`,
-      description: t("about_description"),
-      images: ["/images/or-2.jpg"]
-    }
-  };
-}
 
 // "All films" are the ones Or directed, filmed and edited; producer and crew
 // work is listed under Selected Credits
