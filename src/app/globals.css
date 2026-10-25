@@ -251,8 +251,8 @@
   inset: -10%;
   background: radial-gradient(
     40% 32% at 50% 50%,
-    rgba(var(--bc, 232, 150, 79), 0.05),
-    rgba(var(--bc, 232, 150, 79), 0.025) 40%,
+    rgba(var(--bc, 232, 150, 79), 0.1),
+    rgba(var(--bc, 232, 150, 79), 0.05) 40%,
     transparent 72%
   );
   animation: atmosphere-breathe 18s ease-in-out infinite alternate;
@@ -272,6 +272,18 @@
     opacity: 0.7;
     transform: translate3d(3%, 1%, 0) scale(1.02);
   }
+}
+
+/* Small grey text tuned for black: on the landing page the contact form
+   and footer sit on the sky's warmest light, where zinc-500/600 drop to ~2:1.
+   Lifted there only (muted to zinc-400, links and the copyright to zinc-300),
+   keeping link hover colours. */
+[data-sky-root] .sky-text-muted {
+  color: var(--color-zinc-400);
+}
+
+[data-sky-root] .sky-text-link:not(:hover):not(:focus-visible) {
+  color: var(--color-zinc-300);
 }
 
 /* Hero text panel: a drifting light that reveals photography beneath it.

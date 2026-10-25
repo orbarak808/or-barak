@@ -36,7 +36,7 @@ const fieldClasses =
   "bg-transparent border-0 border-b border-zinc-700 dark:border-zinc-700 rounded-none px-0 py-3 text-base sm:text-lg text-white placeholder:text-zinc-600 focus-visible:ring-0 focus-visible:border-amber-500 dark:focus-visible:border-amber-400 transition-colors font-sans w-full touch-manipulation";
 
 const labelClasses =
-  "text-zinc-500 dark:text-zinc-500 uppercase tracking-wider text-xs font-sans mb-2 block";
+  "sky-text-muted text-zinc-500 dark:text-zinc-500 uppercase tracking-wider text-xs font-sans mb-2 block";
 
 type ContactProps = {
   /** Merged onto the section; the landing page clears its fill */
@@ -223,7 +223,7 @@ const Contact = ({ className }: ContactProps) => {
               href={link.href}
               target='_blank'
               rel='noopener noreferrer'
-              className='text-zinc-500 dark:text-zinc-500 uppercase tracking-wider text-xs font-sans hover:text-amber-500 dark:hover:text-amber-400 transition-colors py-2 touch-manipulation'
+              className='sky-text-link text-zinc-500 dark:text-zinc-500 uppercase tracking-wider text-xs font-sans hover:text-amber-500 dark:hover:text-amber-400 transition-colors py-2 touch-manipulation'
             >
               {t(link.name)}
             </Link>

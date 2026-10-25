@@ -44,7 +44,7 @@ export default async function Home() {
   const t = await getTranslations();
 
   return (
-    <div className='relative isolate overflow-clip max-w-full'>
+    <div data-sky-root className='relative isolate overflow-clip max-w-full'>
       <AtmosphereSky />
       <ScrollRevealProvider>
         <section

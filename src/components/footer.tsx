@@ -69,7 +69,7 @@ const Footer = async ({ className }: FooterProps) => {
           <div className='text-center px-4'>
             <Typography
               variant='caption1'
-              className='text-zinc-500 dark:text-zinc-500 text-sm sm:text-base'
+              className='sky-text-link text-zinc-500 dark:text-zinc-500 text-sm sm:text-base'
             >
               {t("footer_copyright", { year: currentYear })}
             </Typography>
@@ -77,7 +77,7 @@ const Footer = async ({ className }: FooterProps) => {
 
           <Typography
             variant='caption2'
-            className='text-zinc-400 dark:text-zinc-600 text-xs sm:text-sm px-4 text-center'
+            className='sky-text-muted text-zinc-400 dark:text-zinc-600 text-xs sm:text-sm px-4 text-center'
           >
             {t("footer_tagline")}
           </Typography>
