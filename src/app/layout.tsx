@@ -32,11 +32,11 @@ export default async function RootLayout({
       className={`${montserrat.variable} dark`}
       suppressHydrationWarning
     >
-      <body className='antialiased bg-background text-foreground overflow-x-hidden'>
+      <body className='antialiased bg-background text-foreground overflow-x-clip'>
         <NextIntlClientProvider messages={messages} locale={locale}>
           <HeroVisibilityProvider>
             <Navbar />
-            <main className='min-h-screen pt-14 sm:pt-16 overflow-x-hidden max-w-full'>
+            <main className='min-h-screen pt-14 sm:pt-16 overflow-x-clip max-w-full'>
               {children}
             </main>
             <Footer />

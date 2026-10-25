@@ -41,7 +41,7 @@ export default async function Home() {
   const t = await getTranslations();
 
   return (
-    <div className='overflow-x-hidden max-w-full'>
+    <div className='overflow-clip max-w-full'>
       <section id='home' className='scroll-mt-14 sm:scroll-mt-16'>
         <HeroSection
           subtitle={t("home_hero_subtitle")}
