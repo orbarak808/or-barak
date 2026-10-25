@@ -53,13 +53,6 @@ export function VideoCarousel({ videos, title }: VideoCarouselProps) {
     isDialogOpen.onTrue();
   };
 
-  // Shared styling for the prev/next arrows — solid gold so they read
-  // immediately as navigation against dark thumbnails.
-  // dark: duplicates are needed — the outline Button variant sets
-  // dark:bg-input/30 etc., which outrank unprefixed utilities in dark mode.
-  const arrowClassName =
-    "hidden md:flex border-amber-400 bg-amber-500 text-black shadow-lg hover:bg-amber-400 hover:border-amber-300 hover:text-black dark:border-amber-400 dark:bg-amber-500 dark:text-black dark:hover:bg-amber-400 dark:hover:border-amber-300";
-
   return (
     <>
       <div className='space-y-6'>
@@ -98,12 +91,12 @@ export function VideoCarousel({ videos, title }: VideoCarouselProps) {
           </CarouselContent>
           {canScrollPrev && (
             <CarouselPrevious
-              className={`${arrowClassName} left-2 top-1/2 -translate-y-1/2`}
+              className='hidden md:flex left-2 top-1/2 -translate-y-1/2'
             />
           )}
           {canScrollNext && (
             <CarouselNext
-              className={`${arrowClassName} right-2 top-1/2 -translate-y-1/2`}
+              className='hidden md:flex right-2 top-1/2 -translate-y-1/2'
             />
           )}
         </Carousel>

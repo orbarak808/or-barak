@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Icon } from "@/components/ui/icon";
+import { ArrowButton } from "@/components/ui/arrow-button";
 import { PhotographyImage } from "@/lib/types/photography";
 import { lightboxSrc } from "@/lib/content/photography";
 
@@ -15,9 +16,6 @@ interface ImageLightboxProps {
   /** Focus goes back here on close (the thumbnail that opened it) */
   returnFocusRef?: React.RefObject<HTMLElement | null>;
 }
-
-const arrowClasses =
-  "absolute top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#D4AF37] bg-[rgba(6,5,6,0.7)] text-[#EDE6D8] transition-colors hover:bg-[#D4AF37]/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]/60 sm:h-12 sm:w-12";
 
 // A horizontal drag longer than this (px) on touch screens flips the photo
 const SWIPE_THRESHOLD = 50;
@@ -154,22 +152,18 @@ export function ImageLightbox({
 
           {count > 1 && (
             <>
-              <button
-                type='button'
+              <ArrowButton
+                direction='previous'
                 onClick={goToPrevious}
                 aria-label='Previous image'
-                className={`${arrowClasses} left-3 sm:left-6`}
-              >
-                <Icon name='lucide:arrow-left' className='h-5 w-5' />
-              </button>
-              <button
-                type='button'
+                className='absolute left-3 top-1/2 z-10 -translate-y-1/2 sm:left-6'
+              />
+              <ArrowButton
+                direction='next'
                 onClick={goToNext}
                 aria-label='Next image'
-                className={`${arrowClasses} right-3 sm:right-6`}
-              >
-                <Icon name='lucide:arrow-right' className='h-5 w-5' />
-              </button>
+                className='absolute right-3 top-1/2 z-10 -translate-y-1/2 sm:right-6'
+              />
             </>
           )}
         </DialogPrimitive.Content>

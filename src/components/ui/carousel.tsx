@@ -4,9 +4,8 @@ import * as React from "react";
 import useEmblaCarousel, {
   type UseEmblaCarouselType
 } from "embla-carousel-react";
-import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { ArrowButton } from "@/components/ui/arrow-button";
 
 type CarouselApi = UseEmblaCarouselType[1];
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
@@ -195,16 +194,17 @@ CarouselItem.displayName = "CarouselItem";
 
 const CarouselPrevious = React.forwardRef<
   HTMLButtonElement,
-  React.ComponentProps<typeof Button>
->(({ className, variant = "outline", ...props }, ref) => {
+  React.ComponentProps<"button">
+>(({ className, ...props }, ref) => {
   const { orientation, scrollPrev, canScrollPrev } = useCarousel();
 
   return (
-    <Button
+    <ArrowButton
       ref={ref}
-      variant={variant}
+      direction='previous'
+      aria-label='Previous slide'
       className={cn(
-        "absolute h-10 w-10 sm:h-11 sm:w-11 rounded-full min-w-[44px] min-h-[44px] touch-manipulation",
+        "absolute",
         orientation === "horizontal"
           ? "-left-12 top-1/2 -translate-y-1/2"
           : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
@@ -213,26 +213,24 @@ const CarouselPrevious = React.forwardRef<
       disabled={!canScrollPrev}
       onClick={scrollPrev}
       {...props}
-    >
-      <Icon name='lucide:arrow-left' className='h-4 w-4 sm:h-5 sm:w-5' />
-      <span className='sr-only'>Previous slide</span>
-    </Button>
+    />
   );
 });
 CarouselPrevious.displayName = "CarouselPrevious";
 
 const CarouselNext = React.forwardRef<
   HTMLButtonElement,
-  React.ComponentProps<typeof Button>
->(({ className, variant = "outline", ...props }, ref) => {
+  React.ComponentProps<"button">
+>(({ className, ...props }, ref) => {
   const { orientation, scrollNext, canScrollNext } = useCarousel();
 
   return (
-    <Button
+    <ArrowButton
       ref={ref}
-      variant={variant}
+      direction='next'
+      aria-label='Next slide'
       className={cn(
-        "absolute h-10 w-10 sm:h-11 sm:w-11 rounded-full min-w-[44px] min-h-[44px] touch-manipulation",
+        "absolute",
         orientation === "horizontal"
           ? "-right-12 top-1/2 -translate-y-1/2"
           : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
@@ -241,10 +239,7 @@ const CarouselNext = React.forwardRef<
       disabled={!canScrollNext}
       onClick={scrollNext}
       {...props}
-    >
-      <Icon name='lucide:arrow-right' className='h-4 w-4 sm:h-5 sm:w-5' />
-      <span className='sr-only'>Next slide</span>
-    </Button>
+    />
   );
 });
 CarouselNext.displayName = "CarouselNext";
